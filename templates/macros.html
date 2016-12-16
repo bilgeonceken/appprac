@@ -1,0 +1,18 @@
+{% macro render_field(field)%}
+<div class="field">
+    <!--Our fields returns errors if something goes wrong
+        we better show those to users
+     -->
+    {%if field.errors %}
+        {% for error in field.errors %}
+            <div class="notification error">{{ error }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- And finally, field renderer-->
+
+    <!--Read more about forms -->
+    {{field(placeholder=field.label.text)}}
+        
+</div>
+{% endmacro %}

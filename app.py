@@ -1,33 +1,33 @@
-from flask import Flask,g,render_template,flash,redirect,url_for
-from flask_login import LoginManager, login_user,logout_user,login_required
+from flask import Flask, g, render_template, flash, redirect, url_for
+from flask_login import (LoginManager, login_user,
+                         logout_user, login_required, current_user)
 from flask_bcrypt import check_password_hash
-##FlaskWTFDeprecationWarning: "flask_wtf.Form" has been renamed to "FlaskForm" and will
-##be removed in 1.0.
+from flask_bootstrap import Bootstrap
 import forms
 import model
 
-app=Flask(__name__)
-
+app = Flask(__name__)
+##Flask-bootstrap init
+bootstrap = Bootstrap(app)
 
 ##Defined these here to make changes easily
-DEBUG=True
-PORT=8000
-HOST="0.0.0.0"
+DEBUG = True
+PORT = 8000
+HOST = "0.0.0.0"
 
-app.secret_key="asdfasdfasdf324134213423"
+app.secret_key = "asdfasdfasdf324134213423"
 
 ##SETTING UP LOGIN MANAGER
-login_manager=LoginManager()
+login_manager = LoginManager()
 login_manager.init_app(app)
 
 
 ##this is a login manager instance method and
-##instead of "login", we could define an ansolute url as well
+##instead of "slogin", we could define an ansolute url as well
 ##If a not logged in user tries to access
 ## login required view we will redirect them to login view
 ##with this.
-login_manager.login_view="login"
-
+login_manager.login_view = "login"
 
 ##Documentation: You will need to provide a user_loader callback.
 ##This callback is used to reload the user object
@@ -36,19 +36,30 @@ login_manager.login_view="login"
 ##and return the corresponding user object.
 @login_manager.user_loader
 def load_user(user_id):
+    """loads users"""
     try:
-        return model.User.get(model.User.id==user_id)
-    ## A peewee error
+        ##.get() is not a dic. method but a peewee Model's instance method.
+        ##getting the row where User.id equals user_id.
+        ##peewee defines autoincerement primary_key id
+        ## automatically even if you do not define it
+        ## explicitly
+        return model.User.get(model.User.id == user_id)
+    ## If no row matches the .get() query
+    ##peewee raises this error
     except model.DoesNotExist:
         return None
-
 
 ##For web-apps you will typically open a connection
 ##when a request is started and close it when the response is delivered:
 @app.before_request
 def before_request():
-    g.db=model.DATABASE
+    """configures before request behavior"""
+    g.db = model.DATABASE
     g.db.connect()
+    ## current_user: flask_login object. returns current user
+    ## BUT!!! current_user is just a proxy. never pass it as it is.
+    ## user _get_current_object() instead
+    g.user = current_user
 
 ##I must think about reasons to use g here.
 
@@ -66,16 +77,15 @@ def before_request():
 ## makes sense
 @app.after_request
 def after_request(response):
+    """configures after request behavior"""
     g.db.close()
     return response
 
-##TODO:Read teardown request part: http://flask.pocoo.org/docs/0.11/reqcontext/
-
-
-@app.route("/register", methods=("GET","POST"))
+@app.route("/register", methods=("GET", "POST"))
 def register():
+    """register view function"""
     ##we pass this to render template
-    form=forms.RegisterForm()
+    form = forms.RegisterForm()
     ##this method belongs to forms
     ##returns true when validators do not raise any error
     ##IMPORTANT:
@@ -92,51 +102,65 @@ def register():
             username=form.username.data,
             email=form.email.data,
             ##create_user func encrypts it
-            password=form.password.data,
-        )
+            password=form.password.data)
         ##its good to redirect after a post request
         return redirect(url_for("index"))
     ##if get request
-    return render_template("register.html",form=form)
+    return render_template("register.html", form=form)
 
-@app.route("/login",methods=("GET","POST"))
+@app.route("/login", methods=("GET", "POST"))
 def login():
-    form=forms.LoginForm()
+    """login view function"""
+    form = forms.LoginForm()
     if form.validate_on_submit():
         try:
             ##compare emails first
-            user=model.User.get(model.User.email==form.email.data)
+            user = model.User.get(model.User.email == form.email.data)
         except model.DoesNotExist:
             flash("Wrong email or password", "error")
-            print("Olmadi")
         else:
-            print("Try gecti")
             ##and secondly passwords
             if check_password_hash(user.password, form.password.data):
                 ##login_user() function creates sessions in users' browser, creates a cookie
                 ##logout_user() deletes the session cookie created by login_user()
                 login_user(user)
-                print("login ettim")
-                flash("Logged in successfully!","success")
+                flash("Logged in successfully!", "success")
                 return redirect(url_for("index"))
             else:
                 flash("Wrong email or password", "error")
 
-    return render_template("login.html",form=form)
+    return render_template("login.html", form=form)
 
 @app.route("/logout")
 ##you put this decorator to well... login required views.
 @login_required
 def logout():
+    """logout view function"""
     logout_user()
-    flash("Logged out!","success")
+    flash("Logged out!", "success")
     return redirect(url_for("index"))
+
+@app.route("/new_post", methods=("GET", "POST"))
+@login_required
+def post():
+    """post view"""
+    form = forms.PostForm()
+    if form.validate_on_submit():
+        ##g.user=current_user and curret_user is just a proxy
+        ## you must user _get_current_object() when passing it to
+        ## places.
+        model.Post.create(user=g.user._get_current_object(),
+                          content=form.content.data.strip())
+        flash("Post posted!")
+        redirect(url_for("index"))
+    return render_template("post.html", form=form)
 
 @app.route("/")
 def index():
-    return render_template("layout.html")
+    """index view"""
+    return render_template("bootlayout.html")
 
-if __name__=="__main__":
+if __name__ == "__main__":
     model.initialize()
     try:
         ##Creates a superuser for us
@@ -145,8 +169,7 @@ if __name__=="__main__":
             username="kambafca",
             email="kambafca@mynet.com",
             password="password",
-            admin=True
-        )
+            admin=True)
     except ValueError:
         pass
-    app.run(debug=DEBUG,port=PORT,host=HOST)
+    app.run(debug=DEBUG, port=PORT, host=HOST)

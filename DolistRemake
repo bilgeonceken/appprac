@@ -1,0 +1,77 @@
+1- Create a models.py file
+    define your user model
+
+2- On app.py Define config constants. In our case these were 
+    DEBUG=True
+    HOST="0.0.0.0"
+    PORT=8000
+
+3- define secret key
+    app.secret_key="safasdfasdfa"
+
+4- configure LoginManager() of flask login
+    login_manager=LoginManager()
+    login_manager.init_app(app)
+
+    after that user_loader from flask_login load_user must be defined
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        try:
+            return models.User.get(models.User.id==user_id)
+        except models.DoesNot exist:
+            return None
+
+4-provide before and after request definitions
+
+    @app.before_request:
+    def before_request():
+    """connectt to the database before each request"""
+        g.db=models.DATABASE
+        d.gb.connect()
+
+    @app.after_request
+    def after_request(response):
+    """close the database connection after each request"""
+        g.db.close
+        return response
+
+5- On models.py define an "initialize" function
+   that creates the user table:
+
+    DATABASE.connect()
+    DATABASE.create_tables([User], safe=True)
+    DATABASE.close()
+
+6- On app.py create if name_main part
+
+    if __name__ == "__main__":
+    models.initialize()
+    app.run(debug=DEBUG,host=HOST,port=PORT)
+
+    you can also create a superuser here for later use
+
+7- Now that we have our app's base ready, time to start making login form
+
+    create a file named forms.py and with wtfforms create your form here
+    
+    class LoginForm():
+        ...
+8- create templates directory
+
+9- create a file named macros.html
+   we will put out macros here and import them where necessary
+
+10- create a macro named render_field
+    this macro will render the field that is given to it as argument
+
+11- you will call that macro in login.html
+    create a for like: for field in form
+                        render_field(field)
+
+    do not forget to add a submit button
+
+12- do the same process for register form.
+
+13- create their view functions on app.py
+        

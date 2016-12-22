@@ -1,14 +1,12 @@
 from flask import Flask, g, render_template, flash, redirect, url_for
 from flask_login import (LoginManager, login_user,
                          logout_user, login_required, current_user)
-from flask_bcrypt import check_password_hash
 from flask_bootstrap import Bootstrap
+from flask_bcrypt import check_password_hash
 import forms
 import model
-
 app = Flask(__name__)
-##Flask-bootstrap init
-bootstrap = Bootstrap(app)
+Bootstrap=Bootstrap(app)
 
 ##Defined these here to make changes easily
 DEBUG = True
@@ -154,11 +152,13 @@ def post():
         flash("Post posted!")
         redirect(url_for("index"))
     return render_template("post.html", form=form)
-
+@app.route("/devtest")
+def devtest():
+    return render_template("devtest.html")
 @app.route("/")
 def index():
     """index view"""
-    return render_template("bootlayout.html")
+    return render_template("layout.html")
 
 if __name__ == "__main__":
     model.initialize()

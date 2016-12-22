@@ -1,7 +1,7 @@
 import datetime
 from peewee import (CharField, Model, SqliteDatabase, DateTimeField,
                     BooleanField, TextField,
-                    ForeignKeyField, IntegrityError)
+                    ForeignKeyField, IntegrityError, DoesNotExist)
 from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
 

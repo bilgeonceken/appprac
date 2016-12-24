@@ -6,7 +6,7 @@ from flask_bcrypt import check_password_hash
 import forms
 import model
 app = Flask(__name__)
-Bootstrap=Bootstrap(app)
+bootstrap=Bootstrap(app)
 
 ##Defined these here to make changes easily
 DEBUG = True
@@ -21,7 +21,7 @@ login_manager.init_app(app)
 
 
 ##this is a login manager instance method and
-##instead of "slogin", we could define an ansolute url as well
+##instead of "login", we could define an absolute url as well
 ##If a not logged in user tries to access
 ## login required view we will redirect them to login view
 ##with this.
@@ -36,7 +36,7 @@ login_manager.login_view = "login"
 def load_user(user_id):
     """loads users"""
     try:
-        ##.get() is not a dic. method but a peewee Model's instance method.
+        ##.get() is not a dict. method but a peewee Model's instance method.
         ##getting the row where User.id equals user_id.
         ##peewee defines autoincerement primary_key id
         ## automatically even if you do not define it
@@ -152,10 +152,13 @@ def post():
         flash("Post posted!")
         redirect(url_for("index"))
     return render_template("post.html", form=form)
-@app.route("/devtest")
-def devtest():
-    return render_template("devtest.html")
+
+@app.route("/test")
+def test():
+    return render_template("test.html")
+
 @app.route("/")
+@login_required
 def index():
     """index view"""
     return render_template("layout.html")

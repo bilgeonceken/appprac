@@ -1,7 +1,7 @@
 {% from "macros.html" import render_field %}
-
+{% block content %}
 <form class="form" method="POST" action="">
-    <!--Creates a div that has a style:hidden attribute 
+    <!--Creates a div that has a style:hidden attribute
          actually i dont know what hidden tag is
      -->
     {{ form.hidden_tag()}}
@@ -11,3 +11,5 @@
     {% endfor %}
     <button type="submit" id="submit">Register!</button>
 </form>
+{% endblock %}
+<!--

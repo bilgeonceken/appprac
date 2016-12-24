@@ -54,7 +54,7 @@ class User(UserMixin, Model):
     ##check documentation
 class Post(Model):
     """Post model object"""
-    timestamp = DateTimeField(datetime.datetime.now)
+    timestamp = DateTimeField(default=datetime.datetime.now)
     ##related_name = "posts" means now these is some_user.posts
     user = ForeignKeyField(
         rel_model=User,
@@ -63,6 +63,8 @@ class Post(Model):
     content = TextField()
     class Meta:
         """defines database the model related to and stuff"""
+        database=DATABASE
+        ##newest items first
         order_by = ("-timestamp",)
 
 ##we call this function on app.py
@@ -70,5 +72,5 @@ class Post(Model):
 def initialize():
     """Initilizes the database"""
     DATABASE.connect()
-    DATABASE.create_tables([User], safe=True)
+    DATABASE.create_tables([User, Post], safe=True)
     DATABASE.close()

@@ -141,8 +141,8 @@ def logout():
     flash("Logged out!", "success")
     return redirect(url_for("index"))
 
-@app.route("/new_post", methods=("GET", "POST"))
-@app.route("/new_post/<int:page>", methods=("GET", "POST"))
+@app.route("/post", methods=("GET", "POST"))
+@app.route("/post/<int:page>", methods=("GET", "POST"))
 @login_required
 def post(page=1):
     """post view"""

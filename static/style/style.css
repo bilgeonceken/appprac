@@ -74,7 +74,7 @@ h4{
     margin-top: 50px;
     top: 0;
     width: 250px;
-    z-index: -1;
+    z-index: 3;
   }
   .sidebar-nav .navbar .navbar-collapse {
     padding: 0;

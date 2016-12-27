@@ -1,7 +1,8 @@
 import datetime
-from peewee import (CharField, Model, SqliteDatabase, DateTimeField,
-                    BooleanField, TextField,
-                    ForeignKeyField, IntegrityError, DoesNotExist)
+# from peewee import (CharField, Model, SqliteDatabase, DateTimeField,
+#                     BooleanField, TextField,
+#                     ForeignKeyField, IntegrityError, DoesNotExist)
+from peewee import *
 from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
 
@@ -20,6 +21,7 @@ class User(UserMixin, Model):
     ##also notice it is not now(), but just now
     ##joined_at=TimestampField(default=datetime.datetime.now)
     joined_at = DateTimeField(default=datetime.datetime.now)
+    ##TODO:add name,surname etc. and create another register form
     is_admin = BooleanField(default=False)
 
     class Meta:

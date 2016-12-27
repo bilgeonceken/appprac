@@ -1,20 +1,39 @@
 {% extends "layout.html" %}
 {% from "macros.html" import render_field %}
-
 {% block content %}
+<main id="page-wrapper2">
 <div class="arbwrap">
     <div class="row" style="padding:15px;">
-        <div class="col-sm-2 row hidden-xs"></div>
-        <div class="col-sm-8">
-            <form method="POST" action="">
-                {{ form.hidden_tag() }}
-                {% for field in form %}
-                    {{ render_field(field) }}
+        <div class="col-sm-3 row hidden-xs"></div>
+        <div class="col-sm-6">
+            <div class="row">
+                <form method="POST" action="">
+                    {{ form.hidden_tag() }}
+                    {% for field in form %}
+                        {{ render_field(field) }}
+                    {% endfor %}
+                    <button style="margin-top:15px; margin-bottom:20px;" class="btn btn-default" type="submit" id="submit">Post it!</button>
+                    <div class="pull-right">
+                    {% if page > 1 %}
+                      <a style="margin-top:15px; margin-bottom:20px;" class="btn btn-default" href={{url_for("post")}}/{{ page - 1 }}>Prev</a>
+                    {% endif %}
+                    {% if page < makspage %}
+                      <a style="margin-top:15px; margin-bottom:20px;" class="btn btn-default" href={{url_for("post")}}/{{ page + 1 }}>Next</a>
+                    {% endif %}
+                    </div>
+                </form>
+            </div>
+            <div class="row">
+                {% for post in allposts %}
+                    <div class="well">
+                        <h3>{{ post.user.username}}</h3>
+                        <p>{{ post.content }}</p>
+                    </div>
                 {% endfor %}
-                <button type="submit" id="submit">Post it!</button>
-            </form>
+            </div>
         </div>
-        <div class="col-sm-2"></div>
+        <div class="col-sm-3"></div>
     </div>
 </div>
+</main>
 {% endblock %}

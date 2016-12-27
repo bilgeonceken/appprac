@@ -5,6 +5,7 @@ from flask_bootstrap import Bootstrap
 from flask_bcrypt import check_password_hash
 import forms
 import model
+from peewee import *
 app = Flask(__name__)
 bootstrap=Bootstrap(app)
 
@@ -109,6 +110,8 @@ def register():
 @app.route("/login", methods=("GET", "POST"))
 def login():
     """login view function"""
+    if current_user.is_authenticated:
+        return redirect(url_for("index"))
     form = forms.LoginForm()
     if form.validate_on_submit():
         try:
@@ -139,23 +142,23 @@ def logout():
     return redirect(url_for("index"))
 
 @app.route("/new_post", methods=("GET", "POST"))
+@app.route("/new_post/<int:page>", methods=("GET", "POST"))
 @login_required
-def post():
+def post(page=1):
     """post view"""
+    postsperpage=10
+    allposts = model.Post.select().paginate(page,postsperpage)
+    makspage = (allposts.count()/postsperpage) + 1
     form = forms.PostForm()
     if form.validate_on_submit():
         ##g.user=current_user and curret_user is just a proxy
         ## you must user _get_current_object() when passing it to
         ## places.
-        model.Post.create(user=g.user._get_current_object(),
+        model.Post.create(user = g.user._get_current_object(),
                           content=form.content.data.strip())
         flash("Post posted!")
         redirect(url_for("index"))
-    return render_template("post.html", form=form)
-
-@app.route("/test")
-def test():
-    return render_template("test.html")
+    return render_template("post.html", form=form, allposts=allposts, page=page, makspage=makspage)
 
 @app.route("/")
 @login_required

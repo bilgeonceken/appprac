@@ -1,15 +1,20 @@
 {% from "macros.html" import render_field %}
+{% extends "loginlayout.html" %}
 {% block content %}
-<form class="form" method="POST" action="">
-    <!--Creates a div that has a style:hidden attribute
-         actually i dont know what hidden tag is
-     -->
-    {{ form.hidden_tag()}}
-    {% for field in form %}
-        <!-- The macro we imported renders given lines from forms, obviously-->
-        {{ render_field(field) }}
-    {% endfor %}
-    <button class="btn btn-default" type="submit" id="submit">Register!</button>
-</form>
+<div class="col-sm-4 col-lg-5"></div>
+<div class="col-sm-4 col-lg-2">
+    <h2 class="regtitle">Register</h2>
+    <form class="form well .form-group" method="POST" action="">
+        <!--Creates a div that has a style:hidden attribute
+             actually i dont know what hidden tag is
+         -->
+        {{ form.hidden_tag()}}
+        {% for field in form %}
+            <!-- The macro we imported renders given lines from forms, obviously-->
+            {{ render_field(field) }}
+        {% endfor %}
+        <button class="btn btn-default" type="submit" id="submit">Register!</button>
+    </form>
+</div>
+<div class="col-lg-5"></div>
 {% endblock %}
-<!--

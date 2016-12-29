@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm as Form
-from wtforms import StringField, PasswordField, TextAreaField
+from wtforms import StringField, PasswordField, TextAreaField, DateTimeField, IntegerField, SelectField
 from wtforms.validators import DataRequired, Regexp, ValidationError, Email, Length, EqualTo
 
 ##FlaskWTFDeprecationWarning: "flask_wtf.Form" has been renamed to "FlaskForm"
@@ -47,6 +47,20 @@ class RegisterForm(Form):
         ]
     )
 
+    firstname= StringField(
+        "First name",
+        validators=[
+            DataRequired()
+        ]
+    )
+
+    lastname= StringField(
+        "Last name",
+        validators=[
+            DataRequired()
+        ]
+    )
+
     email = StringField(
         "Email",
         validators=[
@@ -79,3 +93,11 @@ class LoginForm(Form):
 class PostForm(Form):
     """Post form object"""
     content = TextAreaField("Type stuff", validators=[DataRequired()])
+
+class EventForm(Form):
+    """Event form object"""
+    eventname = StringField("Event name", validators=[DataRequired()])
+    eventdatetime = DateTimeField("Y-m-d H:M:S",format="%Y-%m-%d %H:%M:%S")
+    eventcontent = TextAreaField("Type what you type to announcement mails.")
+    eventtype = IntegerField("0: ori-ng, 1: running")
+    eventday = SelectField("Event Day", choices=[("2", "wednesday"),("5", "saturday"),("6", "sunday")])

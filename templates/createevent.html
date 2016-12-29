@@ -1,0 +1,21 @@
+{% from "macros.html" import render_field %}
+{% extends "layout.html" %}
+{% block content %}
+<main id="page-wrapper2">
+<div class="arbwrap">
+    <div class="row" style="padding:15px;">
+        <div class="col-sm-3 row"></div>
+        <div class="col-sm-6">
+                <div class="row">
+                    <form method="POST" action="">
+                        {% for field in form %}
+                            {{render_field(field)}}
+                        {% endfor %}
+                        <button class="btn btn-default" type="submit" id="submit" style="margin-left:5px;">Create!</button>
+                </form>
+                </div>
+        </div>
+        <div class="col-sm-3"></div>
+    </div>
+</main>
+{% endblock %}

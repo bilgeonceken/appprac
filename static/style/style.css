@@ -31,6 +31,12 @@ h2, p{
     margin-top: 60px;
 }
 
+.regtitle{
+    color:white;
+    margin-top: 60px;
+    font-weight: 300;
+}
+
 
 /* CSS used here will be applied after bootstrap.css */
 /* CSS used here will be applied after bootstrap.css */

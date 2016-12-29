@@ -99,6 +99,8 @@ def register():
         ##do not forget that create_user() is a class method defined by us
         model.User.create_user(
             username=form.username.data,
+            firstname=form.firstname.data,
+            lastname=form.lastname.data,
             email=form.email.data,
             ##create_user func encrypts it
             password=form.password.data)
@@ -146,7 +148,7 @@ def logout():
 @login_required
 def post(page=1):
     """post view"""
-    postsperpage=10
+    postsperpage=6
     allposts = model.Post.select().paginate(page,postsperpage)
     makspage = (allposts.count()/postsperpage) + 1
     form = forms.PostForm()
@@ -157,8 +159,32 @@ def post(page=1):
         model.Post.create(user = g.user._get_current_object(),
                           content=form.content.data.strip())
         flash("Post posted!")
-        redirect(url_for("index"))
+        return redirect(url_for("post"))
     return render_template("post.html", form=form, allposts=allposts, page=page, makspage=makspage)
+
+@app.route("/members")
+@login_required
+def members():
+    teammembers = model.User.select()
+    return render_template("members.html", teammembers=teammembers)
+
+@app.route("/createevent", methods=("GET","POST"))
+@login_required
+def createevent():
+    form = forms.EventForm()
+    if form.validate_on_submit():
+        model.Event.create_event(eventname=form.eventname.data, eventdatetime=form.eventdatetime.data,
+                                 eventtype=int(form.eventtype.data), eventday=int(form.eventday.data))
+
+        flash("Event created successfully")
+        return redirect(url_for("nextevent"))
+    return render_template("createevent.html", form=form)
+
+@app.route("/nextevent")
+@login_required
+def nextevent():
+    event = model.Event.select().get()
+    return render_template("nextevent.html",event=event)
 
 @app.route("/")
 @login_required
@@ -173,6 +199,8 @@ if __name__ == "__main__":
         ##remember we defined this @classmethod ourselves on model.py
         model.User.create_user(
             username="kambafca",
+            firstname="blg",
+            lastname="onckn",
             email="kambafca@mynet.com",
             password="password",
             admin=True)

@@ -99,5 +99,5 @@ class EventForm(Form):
     eventname = StringField("Event name", validators=[DataRequired()])
     eventdatetime = DateTimeField("Y-m-d H:M:S",format="%Y-%m-%d %H:%M:%S")
     eventcontent = TextAreaField("Type what you type to announcement mails.")
-    eventtype = IntegerField("0: ori-ng, 1: running")
+    eventtype = SelectField("", choices=[("0","ori-ing"),("1","runnning")])
     eventday = SelectField("Event Day", choices=[("2", "wednesday"),("5", "saturday"),("6", "sunday")])

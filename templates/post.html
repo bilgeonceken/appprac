@@ -28,7 +28,7 @@
                     <div class="well">
                         <div class="row">
                             <h4 class="pull-left">{{ post.user.username}}</h4>
-                            <span class="pull-right"><i class="glyphicon glyphicon-time"></i><time class="timeago" datetime="{{ post.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ') }}">{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</time></span>
+                            <span class="pull-right"><i class="glyphicon glyphicon-time"></i><time class="timeago" datetime="{{ post.timestamp.strftime('%Y-%m-%dT%H:%M:%SZ') }}">{{ moment(post.timestamp).fromNow() }}</time></span>
                         </div>
                         <div class="row clearfix">
                         <article class="">{{ post.content }}</article>

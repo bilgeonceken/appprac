@@ -6,7 +6,10 @@ from flask_bcrypt import check_password_hash
 import forms
 import model
 from peewee import *
+from flask_moment import Moment
+
 app = Flask(__name__)
+moment = Moment(app)
 bootstrap=Bootstrap(app)
 
 ##Defined these here to make changes easily

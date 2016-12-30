@@ -3,3 +3,4 @@ peewee
 flask-login
 flask-bcrypt
 flask-wtf
+flask-moment

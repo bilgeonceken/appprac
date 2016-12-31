@@ -210,7 +210,7 @@ if __name__ == "__main__":
             username="kambafca",
             firstname="blg",
             lastname="onckn",
-            email="kambafca@mynet.com",
+            email="kambafca@yopmail.com",
             password="password",
             admin=True)
     except ValueError:

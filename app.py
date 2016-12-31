@@ -7,9 +7,15 @@ import forms
 import model
 from peewee import *
 from flask_moment import Moment
+from flask_avatar import Avatar
 
 app = Flask(__name__)
 moment = Moment(app)
+
+avatar=Avatar(app)
+AVATAR_URL = "/static/avatars/<text>/<width>" #The avatar url,default '/avatar/<text>/<width>'
+AVATAR_RANGE = [0,512] #set avatar range to allow generate,if disallow,abort(404).Default [0,512]
+
 bootstrap=Bootstrap(app)
 
 ##Defined these here to make changes easily

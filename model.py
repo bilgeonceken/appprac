@@ -1,11 +1,11 @@
 import datetime
-# from peewee import (CharField, Model, SqliteDatabase, DateTimeField,
-#                     BooleanField, TextField,
-#                     ForeignKeyField, IntegrityError, DoesNotExist)
+import subprocess
 from peewee import *
 from playhouse.fields import ManyToManyField
 from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
+## we call a python2 script to generate
+## user avatars for us
 
 
 DATABASE = SqliteDatabase("userdatabase.db")
@@ -26,6 +26,7 @@ class User(UserMixin, Model):
     lastname = CharField()
     ####ex: birthday=date(1960, 1, 15)
     ##birthday = DateField()
+    avatarloc = CharField(default="/static/avatars/default.png")
     is_admin = BooleanField(default=False)
 
     class Meta:
@@ -55,6 +56,12 @@ class User(UserMixin, Model):
                        is_admin=admin)
         except IntegrityError:
             raise ValueError("User already exists")
+        ## if creation is succesful, than we create a random avatar for them
+        else:
+            ## default directory: ./static/avatars/<username>
+            ## drops a username.png in that folder
+            subprocess.Popen(["mkdir", "./static/avatars/"+username])
+            subprocess.Popen(["python2", "avatarcreatorFORPY-2.7.py", username])
 
     ##Typically a for. key will contain primary key of the model
     ##it relates to. but you can specify a "to_field."
@@ -104,7 +111,7 @@ class Event(Model):
 
     @classmethod
     def create_event(cls, eventname, eventdatetime, eventtype, eventday):
-        """creates a new user"""
+        """creates a new event"""
         try:
             cls.create(eventname=eventname, eventdatetime=eventdatetime,
                        eventtype=eventtype, eventday=eventday

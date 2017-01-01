@@ -7,7 +7,6 @@ from flask_bcrypt import generate_password_hash
 ## we call a python2 script to generate
 ## user avatars for us
 
-
 DATABASE = SqliteDatabase("userdatabase.db")
 
 ##i do not know what user mixin does
@@ -28,7 +27,7 @@ class User(UserMixin, Model):
     ##birthday = DateField()
     avatarloc = CharField(default="/static/avatars/default.png")
     is_admin = BooleanField(default=False)
-
+    
     class Meta:
         """defines database related to model and stuff"""
         database = DATABASE

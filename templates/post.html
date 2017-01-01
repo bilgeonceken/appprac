@@ -1,11 +1,10 @@
 {% extends "layout.html" %}
 {% from "macros.html" import render_field %}
 {% block content %}
-<main id="page-wrapper2">
 <div class="arbwrap">
     <div class="row" style="padding:15px;">
-        <div class="col-sm-3 row hidden-xs"></div>
-        <div class="col-sm-6">
+        <div class="col-sm-2 row"></div>
+        <div class="col-sm-7">
             <div class="row">
                 <form method="POST" action="">
                     {{ form.hidden_tag() }}
@@ -40,5 +39,4 @@
         <div class="col-sm-3"></div>
     </div>
 </div>
-</main>
 {% endblock %}

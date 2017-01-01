@@ -27,7 +27,7 @@ class User(UserMixin, Model):
     ##birthday = DateField()
     avatarloc = CharField(default="/static/avatars/default.png")
     is_admin = BooleanField(default=False)
-    
+
     class Meta:
         """defines database related to model and stuff"""
         database = DATABASE
@@ -100,6 +100,7 @@ class Event(Model):
     eventname = CharField()
     eventdatetime = DateTimeField()
     competitors = ManyToManyField(User, related_name="events")
+    eventcontent = CharField()
     ## 0: orienteering, 1: running
     eventtype = IntegerField()
     ##0:monday, 1:tuesday 2: wednesday, ,4: thursday 5: saturday, 6: sunday
@@ -109,11 +110,12 @@ class Event(Model):
         order_by = ("-eventdatetime",)
 
     @classmethod
-    def create_event(cls, eventname, eventdatetime, eventtype, eventday):
+    def create_event(cls, eventname, eventdatetime, eventtype, eventday, eventcontent):
         """creates a new event"""
         try:
             cls.create(eventname=eventname, eventdatetime=eventdatetime,
-                       eventtype=eventtype, eventday=eventday
+                       eventtype=eventtype, eventday=eventday,
+                       eventcontent=eventcontent
                       )
         except IntegrityError:
             raise ValueError("Event already exists")
@@ -123,7 +125,12 @@ class Event(Model):
 def initialize():
     """Initilizes the database"""
     DATABASE.connect()
-    DATABASE.create_tables([User, Post, Event], safe=True)
+    # It does not matter from Peewee’s perspective which model the ManyToManyField goes on, since the back-reference is just the mirror image.
+    # In order to write valid Python, though, you will need to add the ManyToManyField on the second model so that the name of the first model is in the scope.
+    #
+    # We still need a junction table to store the relationships between students and courses.
+    # This model can be accessed by calling the get_through_model() method. This is useful when creating tables.
+    DATABASE.create_tables([User, Post, Event, Event.competitors.get_through_model()], safe=True)
     DATABASE.close()
 
 

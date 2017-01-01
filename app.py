@@ -1,4 +1,4 @@
-from flask import Flask, g, render_template, flash, redirect, url_for
+from flask import Flask, g, render_template, flash, redirect, url_for, request
 from flask_login import (LoginManager, login_user,
                          logout_user, login_required, current_user)
 from flask_bootstrap import Bootstrap
@@ -178,19 +178,30 @@ def createevent():
     form = forms.EventForm()
     if form.validate_on_submit():
         model.Event.create_event(eventname=form.eventname.data, eventdatetime=form.eventdatetime.data,
-                                 eventtype=int(form.eventtype.data), eventday=int(form.eventday.data))
+                                 eventtype=int(form.eventtype.data), eventday=int(form.eventday.data),
+                                 eventcontent=form.eventcontent.data
+                                 )
 
         flash("Event created successfully")
         return redirect(url_for("nextevent"))
     return render_template("createevent.html", form=form)
 
-@app.route("/nextevent")
+@app.route("/nextevent", methods=("GET","POST"))
 @login_required
 def nextevent():
+    if request.method == "POST":
+        user = g.user._get_current_object()
+        event = model.Event.select().get()
+        if request.form["submitbutton"]=="remove":
+            user.events.remove(event)
+        elif request.form["submitbutton"]=="add":
+            user.events.add(event)
     try:
         event = model.Event.select().get()
-    except DoesNotExist:
-        return "Event yok"
+    except model.DoesNotExist:
+        event=None
+        flash("No active event", "error")
+        return render_template("nextevent.html",event=event)
     return render_template("nextevent.html",event=event)
 
 @app.route("/")

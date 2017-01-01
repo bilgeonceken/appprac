@@ -1,10 +1,7 @@
 from flask_wtf import FlaskForm as Form
-from wtforms import StringField, PasswordField, TextAreaField, DateTimeField, IntegerField, SelectField
+from wtforms import (StringField, PasswordField, TextAreaField,
+                     DateTimeField, IntegerField, SelectField)
 from wtforms.validators import DataRequired, Regexp, ValidationError, Email, Length, EqualTo
-
-##FlaskWTFDeprecationWarning: "flask_wtf.Form" has been renamed to "FlaskForm"
-#and will be removed in 1.0.
-
 from model import User
 ##custom validator
 ## raises error if username already exists
@@ -30,12 +27,8 @@ class RegisterForm(Form):
     username = StringField(
         ##label
         "Username",
-        ##bilge, please be aware that you do not have to import
-        ##validators one by one. you can just import validators
-        ##and then use them like validators.validator()
-        ##no need to say but all you have to do is pass a list
-        ## containing the validator functions but conventionally
-        ##defining them to a validators looks better
+        ##conventionally
+        ##defining them to validators looks better i guess
         validators=[
             DataRequired(),
             ##i suppose we could just use \w on regex
@@ -47,14 +40,14 @@ class RegisterForm(Form):
         ]
     )
 
-    firstname= StringField(
+    firstname = StringField(
         "First name",
         validators=[
             DataRequired()
         ]
     )
 
-    lastname= StringField(
+    lastname = StringField(
         "Last name",
         validators=[
             DataRequired()
@@ -65,7 +58,7 @@ class RegisterForm(Form):
         "Email",
         validators=[
             DataRequired(),
-            email_exists,##we define tihs validator ourselves
+            email_exists,##we define this validator ourselves
             Email()
         ]
     )
@@ -84,7 +77,7 @@ class RegisterForm(Form):
         validators=[DataRequired()]
     )
 
-##not validating. we will validate in view!
+##we'll validate this in view.
 class LoginForm(Form):
     """Login form object"""
     email = StringField("Email", validators=[DataRequired(), Email()])
@@ -97,7 +90,9 @@ class PostForm(Form):
 class EventForm(Form):
     """Event form object"""
     eventname = StringField("Event name", validators=[DataRequired()])
-    eventdatetime = DateTimeField("Y-m-d H:M:S",format="%Y-%m-%d %H:%M:%S")
+    eventdatetime = DateTimeField("Y-m-d H:M:S", format="%Y-%m-%d %H:%M:%S")
     eventcontent = TextAreaField("Type what you type to announcement mails.")
-    eventtype = SelectField("", choices=[("0","ori-ing"),("1","runnning")])
-    eventday = SelectField("Event Day", choices=[("2", "wednesday"),("5", "saturday"),("6", "sunday")])
+    eventtype = SelectField("", choices=[("0", "ori-ing"), ("1", "runnning")])
+    eventday = SelectField("Event Day", choices=[("2", "wednesday"),
+                                                 ("5", "saturday"),
+                                                 ("6", "sunday")])

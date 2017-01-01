@@ -3,12 +3,12 @@
 ####Unnecessarily tries to organize a university orienteering team
 
 how to set up locally:
-1)Clone the repo
-2)install dependencies (listed in the file named "dependencies")
-3)execute app.py
-4)go to 127.0.0.1:8000 on your browser
-Default email   : kambafca@yopmail.com
-Default password: password
+1)Clone the repo  
+2)install dependencies (listed in the file named "dependencies")  
+3)execute app.py  
+4)go to 127.0.0.1:8000 on your browser  
+Default email   : kambafca@yopmail.com  
+Default password: password  
 
 
 note to myself: clean up non-url_for links if problems occur when actually hosting the thing  

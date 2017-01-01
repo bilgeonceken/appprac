@@ -12,7 +12,7 @@ note to myself: clean up non-url_for links if problems occur when actually hosti
 - [x] Event model(trainings)
 - [x] Gitgub-like automatically generated unique(?) avatars
 - [ ] Use avatar generator like password_hash_generator in model.py
-- [ ] Get rid of flask-bootstrap
+- [x] Get rid of flask-bootstrap
 - [ ] Profile pages
 - [ ] User friendly create event and "register new user" pages
 - [ ] "Add your name to week's events" pages
@@ -20,3 +20,4 @@ note to myself: clean up non-url_for links if problems occur when actually hosti
 - [ ] Automated e-mails
 - [ ] Replace simplified user model with the real thing
 - [ ] Public page for public
+

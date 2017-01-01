@@ -1,17 +1,13 @@
 from flask import Flask, g, render_template, flash, redirect, url_for, request
 from flask_login import (LoginManager, login_user,
                          logout_user, login_required, current_user)
-from flask_bootstrap import Bootstrap
 from flask_bcrypt import check_password_hash
+from flask_moment import Moment
 import forms
 import model
-from peewee import *
-from flask_moment import Moment
-
 
 app = Flask(__name__)
 moment = Moment(app)
-bootstrap=Bootstrap(app)
 
 ##Defined these here to make changes easily
 DEBUG = True
@@ -23,7 +19,6 @@ app.secret_key = "asdfasdfasdf324134213423"
 ##SETTING UP LOGIN MANAGER
 login_manager = LoginManager()
 login_manager.init_app(app)
-
 
 ##this is a login manager instance method and
 ##instead of "login", we could define an absolute url as well
@@ -152,15 +147,15 @@ def logout():
 @login_required
 def post(page=1):
     """post view"""
-    postsperpage=6
-    allposts = model.Post.select().paginate(page,postsperpage)
+    postsperpage = 6
+    allposts = model.Post.select().paginate(page, postsperpage)
     makspage = (allposts.count()/postsperpage) + 1
     form = forms.PostForm()
     if form.validate_on_submit():
         ##g.user=current_user and curret_user is just a proxy
         ## you must user _get_current_object() when passing it to
         ## places.
-        model.Post.create(user = g.user._get_current_object(),
+        model.Post.create(user=g.user._get_current_object(),
                           content=form.content.data.strip())
         flash("Post posted!")
         return redirect(url_for("post"))
@@ -169,40 +164,45 @@ def post(page=1):
 @app.route("/members")
 @login_required
 def members():
+    """members page view function"""
     teammembers = model.User.select()
     return render_template("members.html", teammembers=teammembers)
 
-@app.route("/createevent", methods=("GET","POST"))
+@app.route("/createevent", methods=("GET", "POST"))
 @login_required
 def createevent():
+    """create event page view function"""
     form = forms.EventForm()
     if form.validate_on_submit():
-        model.Event.create_event(eventname=form.eventname.data, eventdatetime=form.eventdatetime.data,
-                                 eventtype=int(form.eventtype.data), eventday=int(form.eventday.data),
+        model.Event.create_event(eventname=form.eventname.data,
+                                 eventdatetime=form.eventdatetime.data,
+                                 eventtype=int(form.eventtype.data),
+                                 eventday=int(form.eventday.data),
                                  eventcontent=form.eventcontent.data
-                                 )
+                                )
 
         flash("Event created successfully")
         return redirect(url_for("nextevent"))
     return render_template("createevent.html", form=form)
 
-@app.route("/nextevent", methods=("GET","POST"))
+@app.route("/nextevent", methods=("GET", "POST"))
 @login_required
 def nextevent():
+    """next event page view function"""
     if request.method == "POST":
         user = g.user._get_current_object()
         event = model.Event.select().get()
-        if request.form["submitbutton"]=="remove":
+        if request.form["submitbutton"] == "remove":
             user.events.remove(event)
-        elif request.form["submitbutton"]=="add":
+        elif request.form["submitbutton"] == "add":
             user.events.add(event)
     try:
         event = model.Event.select().get()
     except model.DoesNotExist:
-        event=None
+        event = None
         flash("No active event", "error")
-        return render_template("nextevent.html",event=event)
-    return render_template("nextevent.html",event=event)
+        return render_template("nextevent.html", event=event)
+    return render_template("nextevent.html", event=event)
 
 @app.route("/")
 @login_required

@@ -1,6 +1,8 @@
 import datetime
 import subprocess
-from peewee import *
+from peewee import (CharField, IntegerField, DateTimeField, BooleanField,
+                    SqliteDatabase, Model, IntegrityError, ForeignKeyField,
+                    TextField)
 from playhouse.fields import ManyToManyField
 from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
@@ -105,7 +107,7 @@ class Event(Model):
     eventtype = IntegerField()
     ##0:monday, 1:tuesday 2: wednesday, ,4: thursday 5: saturday, 6: sunday
     eventday = CharField()
-    class Meta:
+    class Meta:    
         database = DATABASE
         order_by = ("-eventdatetime",)
 
@@ -125,11 +127,14 @@ class Event(Model):
 def initialize():
     """Initilizes the database"""
     DATABASE.connect()
-    # It does not matter from Peewee’s perspective which model the ManyToManyField goes on, since the back-reference is just the mirror image.
-    # In order to write valid Python, though, you will need to add the ManyToManyField on the second model so that the name of the first model is in the scope.
-    #
-    # We still need a junction table to store the relationships between students and courses.
-    # This model can be accessed by calling the get_through_model() method. This is useful when creating tables.
+    ## it does not matter from peewee's perspective which model
+    ##the manytomany field goes on
+    ##since the back-reference is just the mirror image.
+    ## In order to write valid Python, though, you will need to add the
+    ## ManyToManyField on the second model so that the name of the first model is in the scope.
+    ## We still need a junction table to store the relationships between students and courses.
+    ## This model can be accessed by calling the get_through_model() method.
+    ## This is useful when creating tables.
     DATABASE.create_tables([User, Post, Event, Event.competitors.get_through_model()], safe=True)
     DATABASE.close()
 

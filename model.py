@@ -2,7 +2,7 @@ import datetime
 import subprocess
 from peewee import (CharField, IntegerField, DateTimeField, BooleanField,
                     SqliteDatabase, Model, IntegrityError, ForeignKeyField,
-                    TextField)
+                    TextField, DoesNotExist)
 from playhouse.fields import ManyToManyField
 from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
@@ -107,7 +107,7 @@ class Event(Model):
     eventtype = IntegerField()
     ##0:monday, 1:tuesday 2: wednesday, ,4: thursday 5: saturday, 6: sunday
     eventday = CharField()
-    class Meta:    
+    class Meta:
         database = DATABASE
         order_by = ("-eventdatetime",)
 

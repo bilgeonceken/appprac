@@ -1,5 +1,6 @@
 import sys
-from randomavatar.randomavatar import Avatar
+##from randomavatar.randomavatar import Avatar
+from avatarClass import Avatar
 def main(username):
     # Example usage
     avatar = Avatar(rows=10, columns=10)

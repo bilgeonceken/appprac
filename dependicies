@@ -4,7 +4,6 @@ python2.7
 install with pip3:
 flask
 peewee
-flask-bootstrap
 flask-login
 flask-bcrypt
 flask-wtf
@@ -12,4 +11,3 @@ flask-moment
 
 install with pip2:
 Pillow
-randomavatar

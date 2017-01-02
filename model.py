@@ -8,7 +8,7 @@ from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
 ## we call a python2 script to generate
 ## user avatars for us
-
+from avatarClass import Avatar
 DATABASE = SqliteDatabase("userdatabase.db")
 
 ##i do not know what user mixin does

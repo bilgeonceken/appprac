@@ -19,7 +19,7 @@ note to myself: clean up non-url_for links if problems occur when actually hosti
 - [x] Twitter-like posting and stream(tutorial thingy)
 - [x] Members page
 - [x] Event model(trainings)
-- [x] Gitgub-like automatically generated unique(?) avatars
+- [x] Github-like automatically generated unique(?) avatars
 - [ ] Flash messages(they already exists in view, just need to put them in templates)
 - [ ] Use avatar generator like password_hash_generator in model.py
 - [x] Get rid of flask-bootstrap

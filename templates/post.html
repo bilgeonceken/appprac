@@ -13,10 +13,10 @@
                     {% endfor %}
                     <button style="margin-top:15px; margin-bottom:20px;" class="btn btn-default" type="submit" id="submit">Post it!</button>
                     <div class="pull-right">
-                    {% if page > 1 %}
+                    {% if page != 1 %}
                       <a style="margin-top:15px; margin-bottom:20px;" class="btn btn-default" href={{url_for("post")}}/{{ page - 1 }}>Prev</a>
                     {% endif %}
-                    {% if page <= makspage %}
+                    {% if page < pages %}
                       <a style="margin-top:15px; margin-bottom:20px;" class="btn btn-default" href={{url_for("post")}}/{{ page + 1 }}>Next</a>
                     {% endif %}
                     </div>

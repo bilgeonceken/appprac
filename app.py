@@ -5,6 +5,7 @@ from flask_bcrypt import check_password_hash
 from flask_moment import Moment
 import forms
 import model
+from math import ceil
 
 app = Flask(__name__)
 moment = Moment(app)
@@ -144,11 +145,13 @@ def logout():
 @app.route("/post", methods=("GET", "POST"))
 @app.route("/post/<int:page>", methods=("GET", "POST"))
 @login_required
-def post(page=1):
+def post(page=None):
     """post view"""
+    if not page:
+        page=1
     postsperpage = 6
     allposts = model.Post.select().paginate(page, postsperpage)
-    makspage = (allposts.count()/postsperpage) + 1
+    pages = int(ceil(model.Post.select().count()/float(postsperpage)))
     form = forms.PostForm()
     if form.validate_on_submit():
         ##g.user=current_user and curret_user is just a proxy
@@ -158,7 +161,7 @@ def post(page=1):
                           content=form.content.data.strip())
         flash("Post posted!")
         return redirect(url_for("post"))
-    return render_template("post.html", form=form, allposts=allposts, page=page, makspage=makspage)
+    return render_template("post.html", form=form, allposts=allposts, page=page, pages=pages)
 
 @app.route("/members")
 @login_required

@@ -1,11 +1,3 @@
 kambafca@yopmail.com
 password
 
-test@yopmail.com
-test
-
-test2@yopmail.com
-test
-
-test3@yopmail.com
-test

@@ -1,13 +1,30 @@
 import datetime
 from peewee import (CharField, IntegerField, DateTimeField, BooleanField,
                     SqliteDatabase, Model, IntegrityError, ForeignKeyField,
-                    TextField, DoesNotExist)
+                    TextField, DoesNotExist, Proxy, PostgresqlDatabase)
 from playhouse.fields import ManyToManyField
 from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
-from avatarcreator import createavatar
+##from avatarcreator import createavatar
+import os
 
-DATABASE = SqliteDatabase("userdatabase.db")
+# Import modules based on the environment.
+# The HEROKU value first needs to be set on Heroku
+# either through the web front-end or through the command
+# line (if you have Heroku Toolbelt installed, type the following:
+# heroku config:set HEROKU=1).
+db_proxy = Proxy()
+
+if "HEROKU" in os.environ:
+    from urllib.parse import urlparse
+    import psycopg2
+    urlparse.uses_netloc.append("postgres")
+    url = urlparse.urlparse(os.environ["DATABASE_URL"])
+    db = PostgresqlDatabase(database=url.path[1:], user=url.username, password=url.password, host=url.hostname, port=url.port)
+    db_proxy.initialize(db)
+else:
+    db = SqliteDatabase("userdatabase.db")
+    db_proxy.initialize(db)
 
 ##i do not know what user mixin does
 ## but is it recommened
@@ -25,12 +42,12 @@ class User(UserMixin, Model):
     lastname = CharField()
     ####ex: birthday=date(1960, 1, 15)
     ##birthday = DateField()
-    avatarloc = CharField()
+   ## avatarloc = CharField()
     is_admin = BooleanField(default=False)
 
     class Meta:
         """defines database related to model and stuff"""
-        database = DATABASE
+        database = db
         ##its a tuple. so put  , at the end.
         ##you will not understand the error if you forget that.
         order_by = ('-joined_at',)
@@ -52,12 +69,13 @@ class User(UserMixin, Model):
             cls.create(username=username, firstname=firstname,
                        lastname=lastname, email=email,
                        password=generate_password_hash(password),
-                       is_admin=admin,
+                       is_admin=admin
                        ## createavatar funtion takes username as argument
                        ## and generates and avatar accordingly. Returns location
                        ## of the avatar to be added to the database
                        ## TODO: check if avatars are created despite error.
-                       avatarloc=createavatar(username))
+                       ##,avatarloc=createavatar(username)
+                       )
         except IntegrityError:
             raise ValueError("User already exists")
 
@@ -75,7 +93,7 @@ class Post(Model):
     content = TextField()
     class Meta:
         """defines database the model related to and stuff"""
-        database = DATABASE
+        database = db
         ##newest items first
         order_by = ("-timestamp",)
 
@@ -105,7 +123,7 @@ class Event(Model):
     ##0:monday, 1:tuesday 2: wednesday, ,4: thursday 5: saturday, 6: sunday
     eventday = CharField()
     class Meta:
-        database = DATABASE
+        database = db
         order_by = ("-eventdatetime",)
 
     @classmethod
@@ -123,7 +141,7 @@ class Event(Model):
 ##to create the tables if not exists
 def initialize():
     """Initilizes the database"""
-    DATABASE.connect()
+    db.connect()
     ## it does not matter from peewee's perspective which model
     ##the manytomany field goes on
     ##since the back-reference is just the mirror image.
@@ -132,8 +150,8 @@ def initialize():
     ## We still need a junction table to store the relationships between students and courses.
     ## This model can be accessed by calling the get_through_model() method.
     ## This is useful when creating tables.
-    DATABASE.create_tables([User, Post, Event, Event.competitors.get_through_model()], safe=True)
-    DATABASE.close()
+    db.create_tables([User, Post, Event, Event.competitors.get_through_model()], safe=True)
+    db.close()
 
 
 ### MANY TO MANY TUTORIAL

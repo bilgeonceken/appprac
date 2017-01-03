@@ -53,7 +53,7 @@ def load_user(user_id):
 @app.before_request
 def before_request():
     """configures before request behavior"""
-    g.db = model.DATABASE
+    g.db = model.db_proxy
     g.db.connect()
     ## current_user: flask_login object. returns current user
     ## BUT!!! current_user is just a proxy. never pass it as it is.

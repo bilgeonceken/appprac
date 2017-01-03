@@ -1,3 +1,4 @@
+import subprocess
 from avatarClass import Avatar
 
 ## createavatar funtion takes username as argument
@@ -10,8 +11,10 @@ def createavatar(username):
                                         width=400,
                                         height=400,
                                         pad=10)
-
-    save_location="./static/avatars/"+username+"/default.png"
+    
+    loc="/static/avatars/"+username
+    subprocess(["mkdir",loc])
+    save_location="/static/avatars/"+username+"/default.png"
 
     avatar.save(image_byte_array=image_byte_array, save_location=save_location)
 

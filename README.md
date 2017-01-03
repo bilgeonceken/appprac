@@ -20,7 +20,7 @@ note to myself: clean up non-url_for links if problems occur when actually hosti
 - [x] Members page
 - [x] Event model(trainings)
 - [x] Github-like automatically generated unique(?) avatars
-- [ ] Flash messages(they already exists in view, just need to put them in templates)
+- [x] Flash messages(they already exists in view, just need to put them in templates)
 - [x] Use avatar generator like password_hash_generator in model.py
 - [x] Get rid of flask-bootstrap
 - [ ] Profile pages

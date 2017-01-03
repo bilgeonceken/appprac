@@ -13,9 +13,13 @@
     <link rel="stylesheet" href="/static/style/normalize.css">
   </head>
   <body>
+      {% include "flash.html" %}
     <div class="container-fluid">
     {% include "navbar.html" %}
     <main id="page-wrapper2">
+
+
+
         {% block content %}
         {% endblock %}
     </main>

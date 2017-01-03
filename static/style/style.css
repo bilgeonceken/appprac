@@ -28,7 +28,6 @@ h2, p{
 
 .Logtitle{
     font-weight: 300;
-    margin-top: 60px;
 }
 
 .regtitle{
@@ -37,7 +36,31 @@ h2, p{
     font-weight: 300;
 }
 
+.logoutflash{
+    margin-bottom: 10px;
+}
 
+/*#layoutflash{
+    margin-top: 60px;
+}*/
+
+@media (min-width: 768px) {
+  #flashesbar{
+        margin-top: 50px;
+        margin-left: 250px;
+    }
+}
+
+@media (max-width:768px){
+    #flashesbar{
+        margin-top:50px;
+        margin-left: 0px;
+    }
+}
+
+.altaiter{
+    padding-top: 60px;
+}
 /* CSS used here will be applied after bootstrap.css */
 /* CSS used here will be applied after bootstrap.css */
 /*

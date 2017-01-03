@@ -134,7 +134,6 @@ def login():
     return render_template("login.html", form=form)
 
 @app.route("/logout")
-##you put this decorator to well... login required views.
 @login_required
 def logout():
     """logout view function"""

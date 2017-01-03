@@ -10,9 +10,9 @@ app = Flask(__name__)
 moment = Moment(app)
 
 ##Defined these here to make changes easily
-DEBUG = True
-PORT = 8000
-HOST = "0.0.0.0"
+# DEBUG = True
+# PORT = 8000
+# HOST = "0.0.0.0"
 
 app.secret_key = "asdfasdfasdf324134213423"
 
@@ -223,4 +223,5 @@ if __name__ == "__main__":
             admin=True)
     except ValueError:
         pass
-    app.run(debug=DEBUG, port=PORT, host=HOST)
+    # app.run(debug=DEBUG, port=PORT, host=HOST)
+    app.run()

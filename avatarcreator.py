@@ -1,17 +1,18 @@
-import sys
-##from randomavatar.randomavatar import Avatar
 from avatarClass import Avatar
-def main(username):
-    # Example usage
+
+## createavatar funtion takes username as argument
+## and generates and avatar accordingly. Returns location
+## of the avatar to be added to the database
+def createavatar(username):
+    """creates avatar"""
     avatar = Avatar(rows=10, columns=10)
     image_byte_array = avatar.get_image(string=username,
                                         width=400,
                                         height=400,
                                         pad=10)
 
-    return avatar.save(image_byte_array=image_byte_array,
-                       save_location="./static/avatars/"+username+"/default.png")
+    save_location="./static/avatars/"+username+"/default.png"
 
+    avatar.save(image_byte_array=image_byte_array, save_location=save_location)
 
-if __name__ == '__main__':
-    main(sys.argv[1])
+    return save_location

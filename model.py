@@ -1,19 +1,12 @@
 import datetime
-import subprocess
 from peewee import (CharField, IntegerField, DateTimeField, BooleanField,
                     SqliteDatabase, Model, IntegrityError, ForeignKeyField,
                     TextField, DoesNotExist)
 from playhouse.fields import ManyToManyField
 from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
+from avatarcreator import createavatar
 
-## TODO: do not call avatar creator with sys
-## import the function instead.
-## note: it was first implemented like that
-## because i could not make it work on python3.
-##but works now
-
-from avatarClass import Avatar
 DATABASE = SqliteDatabase("userdatabase.db")
 
 ##i do not know what user mixin does
@@ -32,7 +25,7 @@ class User(UserMixin, Model):
     lastname = CharField()
     ####ex: birthday=date(1960, 1, 15)
     ##birthday = DateField()
-    avatarloc = CharField(default="/static/avatars/default.png")
+    avatarloc = CharField()
     is_admin = BooleanField(default=False)
 
     class Meta:
@@ -59,15 +52,14 @@ class User(UserMixin, Model):
             cls.create(username=username, firstname=firstname,
                        lastname=lastname, email=email,
                        password=generate_password_hash(password),
-                       is_admin=admin)
+                       is_admin=admin,
+                       ## createavatar funtion takes username as argument
+                       ## and generates and avatar accordingly. Returns location
+                       ## of the avatar to be added to the database
+                       ## TODO: check if avatars are created despite error.
+                       avatarloc=createavatar(username))
         except IntegrityError:
             raise ValueError("User already exists")
-        ## if creation is succesful, than we create a random avatar for them
-        else:
-            ## default directory: ./static/avatars/<username>
-            ## drops a username.png in that folder
-            subprocess.Popen(["mkdir", "./static/avatars/"+username])
-            subprocess.Popen(["python3", "avatarcreator", username])
 
     ##Typically a for. key will contain primary key of the model
     ##it relates to. but you can specify a "to_field."

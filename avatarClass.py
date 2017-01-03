@@ -6,6 +6,7 @@ from PIL import Image, ImageDraw
 
 
 class Avatar(object):
+    """user avatar object"""
 
     def __init__(self, rows, columns):
         self.rows = rows

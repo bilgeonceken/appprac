@@ -141,7 +141,7 @@ class Event(Model):
 ##to create the tables if not exists
 def initialize():
     """Initilizes the database"""
-    db.connect()
+    db_proxy.connect()
     ## it does not matter from peewee's perspective which model
     ##the manytomany field goes on
     ##since the back-reference is just the mirror image.
@@ -150,8 +150,8 @@ def initialize():
     ## We still need a junction table to store the relationships between students and courses.
     ## This model can be accessed by calling the get_through_model() method.
     ## This is useful when creating tables.
-    db.create_tables([User, Post, Event, Event.competitors.get_through_model()], safe=True)
-    db.close()
+    db_proxy.create_tables([User, Post, Event, Event.competitors.get_through_model()], safe=True)
+    db_proxy.close()
 
 
 ### MANY TO MANY TUTORIAL

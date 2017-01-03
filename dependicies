@@ -8,6 +8,4 @@ flask-login
 flask-bcrypt
 flask-wtf
 flask-moment
-
-install with pip2:
-Pillow
+pillow

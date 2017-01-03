@@ -6,8 +6,13 @@ from peewee import (CharField, IntegerField, DateTimeField, BooleanField,
 from playhouse.fields import ManyToManyField
 from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
-## we call a python2 script to generate
-## user avatars for us
+
+## TODO: do not call avatar creator with sys
+## import the function instead.
+## note: it was first implemented like that
+## because i could not make it work on python3.
+##but works now
+
 from avatarClass import Avatar
 DATABASE = SqliteDatabase("userdatabase.db")
 
@@ -62,7 +67,7 @@ class User(UserMixin, Model):
             ## default directory: ./static/avatars/<username>
             ## drops a username.png in that folder
             subprocess.Popen(["mkdir", "./static/avatars/"+username])
-            subprocess.Popen(["python2", "avatarcreatorFORPY-2.7.py", username])
+            subprocess.Popen(["python3", "avatarcreator", username])
 
     ##Typically a for. key will contain primary key of the model
     ##it relates to. but you can specify a "to_field."

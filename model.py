@@ -16,10 +16,10 @@ import os
 db_proxy = Proxy()
 
 if "HEROKU" in os.environ:
-    from urllib.parse import urlparse
+    import urllib.parse as ur
     import psycopg2
-    urlparse.uses_netloc.append("postgres")
-    url = urlparse.urlparse(os.environ["DATABASE_URL"])
+    ur.uses_netloc.append("postgres")
+    url = ur.urlparse(os.environ["DATABASE_URL"])
     db = PostgresqlDatabase(database=url.path[1:], user=url.username, password=url.password, host=url.hostname, port=url.port)
     db_proxy.initialize(db)
 else:

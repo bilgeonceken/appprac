@@ -1,7 +1,8 @@
 import datetime
 from peewee import (CharField, IntegerField, DateTimeField, BooleanField,
                     SqliteDatabase, Model, IntegrityError, ForeignKeyField,
-                    TextField, DoesNotExist, Proxy, PostgresqlDatabase)
+                    TextField, DoesNotExist, Proxy, PostgresqlDatabase,
+                   )
 from playhouse.fields import ManyToManyField
 from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
@@ -13,6 +14,7 @@ import os
 # either through the web front-end or through the command
 # line (if you have Heroku Toolbelt installed, type the following:
 # heroku config:set HEROKU=1).
+
 db_proxy = Proxy()
 
 if "HEROKU" in os.environ:
@@ -23,7 +25,8 @@ if "HEROKU" in os.environ:
     db = PostgresqlDatabase(database=url.path[1:], user=url.username, password=url.password, host=url.hostname, port=url.port)
     db_proxy.initialize(db)
 else:
-    db = SqliteDatabase("userdatabase.db")
+    db = PostgresqlDatabase('my_postgres_db', user='postgres_user', password='password', host='localhost')
+    # db = SqliteDatabase("userdatabase.db")
     db_proxy.initialize(db)
 
 ##i do not know what user mixin does
@@ -32,7 +35,7 @@ class User(UserMixin, Model):
     """User model object"""
     ##peewee automatically adds autoinc. id column.
     username = CharField(unique=True)
-    password = CharField(max_length=12)
+    password = CharField(max_length=50)
     email = CharField(unique=True)
     ## todo: answer why timestampfield but not datetimefield?
     ##also notice it is not now(), but just now
@@ -42,12 +45,12 @@ class User(UserMixin, Model):
     lastname = CharField()
     ####ex: birthday=date(1960, 1, 15)
     ##birthday = DateField()
-   ## avatarloc = CharField()
+    avatarloc = CharField(default="/static/avatars/default.png")
     is_admin = BooleanField(default=False)
 
     class Meta:
         """defines database related to model and stuff"""
-        database = db
+        database = db_proxy
         ##its a tuple. so put  , at the end.
         ##you will not understand the error if you forget that.
         order_by = ('-joined_at',)
@@ -68,14 +71,14 @@ class User(UserMixin, Model):
         try:
             cls.create(username=username, firstname=firstname,
                        lastname=lastname, email=email,
-                       password=generate_password_hash(password),
+                       #password=generate_password_hash(password),
+                       password=password,
                        is_admin=admin
                        ## createavatar funtion takes username as argument
                        ## and generates and avatar accordingly. Returns location
                        ## of the avatar to be added to the database
-                       ## TODO: check if avatars are created despite error.
                        ##,avatarloc=createavatar(username)
-                       )
+                      )
         except IntegrityError:
             raise ValueError("User already exists")
 
@@ -93,7 +96,7 @@ class Post(Model):
     content = TextField()
     class Meta:
         """defines database the model related to and stuff"""
-        database = db
+        database = db_proxy
         ##newest items first
         order_by = ("-timestamp",)
 
@@ -123,7 +126,7 @@ class Event(Model):
     ##0:monday, 1:tuesday 2: wednesday, ,4: thursday 5: saturday, 6: sunday
     eventday = CharField()
     class Meta:
-        database = db
+        database = db_proxy
         order_by = ("-eventdatetime",)
 
     @classmethod

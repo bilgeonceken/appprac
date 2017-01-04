@@ -123,7 +123,8 @@ def login():
             flash("Wrong email or password", "error")
         else:
             ##and secondly passwords
-            if check_password_hash(user.password, form.password.data):
+            # if check_password_hash(user.password, form.password.data):
+            if user.password==form.password.data:
                 ##login_user() function creates sessions in users' browser, creates a cookie
                 ##logout_user() deletes the session cookie created by login_user()
                 login_user(user)
@@ -214,17 +215,31 @@ def index():
 
 if __name__ == "__main__":
     model.initialize()
-    try:
+    # try:
         ##Creates a superuser for us
         ##remember we defined this @classmethod ourselves on model.py
-        model.User.create_user(
-            username="kambafca",
-            firstname="blg",
-            lastname="onckn",
-            email="kambafca@yopmail.com",
-            password="password",
-            admin=True)
-    except ValueError:
-        pass
+    print("deniyom")
+    model.User.create_user(
+        username="kambafca",
+        firstname="blg",
+        lastname="onckn",
+        email="kambafca@yopmail.com",
+        #password="password",
+        password="password",
+        admin=True)
+    # except:
+    #     print("olmadi")
+
+    # try:
+    #     print("deniyom")
+    #     model.User.create(
+    #             username="kambafca",
+    #             firstname="blg",
+    #             lastname="onckn",
+    #             email="kambafca@yopmail.com",
+    #             password="password",
+    #             admin=True)
+    # except:
+    #     print("olmadi")
     # app.run(debug=DEBUG, port=PORT, host=HOST)
     app.run()

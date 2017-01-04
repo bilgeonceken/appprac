@@ -20,7 +20,7 @@ note to myself: clean up non-url_for links if problems occur when actually hosti
 #####todo stuff that comes into my mind
 
 - [ ] MAIN TODO: FIX THE POSTGRESQL DATABASE INTEGRATION PROBLEM WITH HEROKU  
-  
+
 - [x] Base structure
 - [x] Theme and navigation structure
 - [x] Twitter-like posting and stream(tutorial thingy)

@@ -1,12 +1,24 @@
 # appprac
 ###An i wanna learn flask project
-####Unnecessarily tries to organize a university orienteering team
+Unnecessarily tries to organize a university orienteering team
 
-if you are planning to use sqlite(which you should if you just want to take a look at the app)  
-just follow "how to set up locally steps", in this read me.  
-If you want to use postgresql however, follow these steps:
+## Deploying to Heroku
 
-###How to set up locally(for Postgresql)
+```
+heroku create
+git push heroku master
+heroku open
+```
+
+Alternatively, you can deploy your own copy of the app using this button:
+
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
+##How to set up locally  
+You can use postgresql or sqlite as a database when setting up locally.  
+Both are explained below.  
+  
+####Database chooice: Postgresql
 + install postgresql
 + After installation, create a new user to manage the database we'll be creating:
 ```
@@ -60,7 +72,7 @@ basically we create the database again and again this way to reset everything.
 probably i would not want to do that if actually brake an actually used, full of data, database.
 
 
-##how to set up locally(for sqlite):
+####Database chooice: Sqlite
 ```
 $ git clone https://github.com/kambafca/appprac  
 $ cd appprac/

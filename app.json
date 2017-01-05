@@ -2,5 +2,10 @@
   "name": "appprac",
   "description": "An i wanna learn flask project",
   "repository": "https://github.com/kambafca/appprac",
-  "keywords": ["flask", "tutorial", "crud"]
+  "keywords": ["flask", "tutorial", "crud"],
+  "success_url": "/login",
+  "env": {
+    "HEROKU": "1"
+  },
+  "addons": ["heroku-postgresql:hobby-dev"]
 }

@@ -15,22 +15,25 @@ Alternatively, you can deploy your own copy of the app using this button:
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 ##How to set up locally  
-You can use postgresql or sqlite as a database when setting up locally.  
-Both are explained below.  
+You can use PostgreSQL or Sqlite as a database when setting up locally.  
+Both situations are explained below.  
   
-####Database chooice: Postgresql
-+ install postgresql
+###Database chooice: Postgresql
+
++ Install PostgreSQL
 + After installation, create a new user to manage the database we'll be creating:
 ```
 sudo adduser postgres_user
 ```
-+ enter password when it asks its password
+
++ Enter "password" when it asks for password so you do not have to use your brain even just a little bit.
 
 + Log into the default PostgreSQL user (called "postgres") to create a database and assign it to the new user:
 ```
 sudo su - postgres
 psql
 ```
+
 + You will be dropped into the PostgreSQL command prompt.
 
 + Create a new user that matches the system user you created. Then create a database managed by that user:
@@ -38,47 +41,54 @@ psql
 CREATE USER postgres_user WITH PASSWORD 'password';
 CREATE DATABASE my_postgres_db OWNER postgres_user;
 ```
-+ then start app.py and go to 127.0.0.1:5000 on your browser.  
-admin account:  
-kambafca@yopmail.com  
-password  
-  
-+ These steps are enough to get it working but i'll copy paste rest of the tutorial anyway.  
 
 + Exit out of the interface with the following command:
+
 ```
 \q
 ```
-+ Exit out of the default "postgres" user account and log into the user you created with the following commands:
+
++ Exit out of the default "postgres" user account:
 ```
 exit
-sudo su - postgres_user
 ```
-+ Sign into the database you created with the following command:
+database part is over
+
++ Clone, install reqs. and run app.py:
+
 ```
-psql my_postgres_db
+$ git clone https://github.com/kambafca/appprac  
+$ cd appprac/
+$ pip3 install -r requirements.txt
+$ python3 app.py
 ```
-+ most importantly when you try something and broke the database, you might want to  
++ then go to 127.0.0.1:5000 on your browser  
+Default admin account:  
+email   : kambafca@yopmail.com  
+password: password
+
+####Important: 
+when you try something with models and database does not work, you might want to  
 delete everything on the database and restart the app. to do that:
 
-stop app.py and then
 ```
 sudo su - postgres
 psql
 DROP DATABASE my_postgres_db;
 CREATE DATABASE my_postgres_db OWNER postgres_user;
 ```
-basically we create the database again and again this way to reset everything.  
-probably i would not want to do that if actually brake an actually used, full of data, database.
 
+basically we delete and create the database again and again to reset it easily.    
+  
+Better write a migration script for everything else.
 
-####Database chooice: Sqlite
+###Database chooice: Sqlite
 ```
 $ git clone https://github.com/kambafca/appprac  
 $ cd appprac/
 $ pip3 install -r requirements.txt
 ```
-+ on model.py comment out line 28, uncomment line 29  
++ on model.py, comment out line 28, uncomment line 29  
 ```
 $ python3 app.py
 ```
@@ -110,4 +120,4 @@ note to myself: clean up non-url_for links if problems occur when actually hosti
 - [ ] Automated e-mails
 - [ ] Replace simplified user model with the real thing
 - [ ] Public page for public
-- [ ] fix Momentjs, does not work properly
+- [ ] ~~fix Momentjs, does not work properly~~

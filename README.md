@@ -97,9 +97,6 @@ Default admin account:
 email   : kambafca@yopmail.com  
 password: password  
 
-
-note to myself: clean up non-url_for links if problems occur when actually hosting the thing  
-
 #####todo stuff that comes into my mind
 
 - [x] MAIN TODO: FIX THE POSTGRESQL DATABASE INTEGRATION PROBLEM WITH HEROKU  
@@ -113,6 +110,7 @@ note to myself: clean up non-url_for links if problems occur when actually hosti
 - [x] Flash messages(they already exists in view, just need to put them in templates)
 - [x] Use avatar generator like password_hash_generator in model.py
 - [x] Get rid of flask-bootstrap
+- [ ] Fix competitors' order on "active event", first should be on top last on the bottom
 - [ ] Profile pages
 - [ ] User friendly create event and "register new user" pages
 - [ ] "Add your name to week's events" pages

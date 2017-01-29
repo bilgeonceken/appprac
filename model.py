@@ -14,9 +14,17 @@ import os
 # either through the web front-end or through the command
 # line (if you have Heroku Toolbelt installed, type the following:
 # heroku config:set HEROKU=1).
+# On this repo though, app.json tells heroku to create an env. variable
+# "HEROKU"="1" so no need to do anything.
 
+# For even more control over how your database is defined/initialized, 
+# we use the Proxy helper. 
+# Proxy objects act as a placeholder, 
+# and then at run-time you can swap it out for a different object.
 db_proxy = Proxy()
 
+# Different init options for heroku and local.
+# As mentioned above, we need "HEROKU" env variable in heroku
 if "HEROKU" in os.environ:
     import urllib.parse as ur
     import psycopg2
@@ -29,8 +37,7 @@ else:
     # db = SqliteDatabase("userdatabase.db")
     db_proxy.initialize(db)
 
-##i do not know what user mixin does
-## but is it recommened
+## User mixin provides some useful stuff
 class User(UserMixin, Model):
     """User model object"""
     ##peewee automatically adds autoinc. id column.
@@ -55,15 +62,15 @@ class User(UserMixin, Model):
         ##you will not understand the error if you forget that.
         order_by = ('-joined_at',)
 
-    def get_posts(self):
-        """gets posts"""
-        return Post.select().where(Post.user == self)
+#    def get_posts(self):
+#        """gets posts"""
+#        return Post.select().where(Post.user == self)
 
-    def get_stream(self):
-        """gets post stream"""
-        return Post.select().where(
-            (Post.user == self)
-        )
+#    def get_stream(self):
+#        """gets post stream"""
+#        return Post.select().where(
+#            (Post.user == self)
+#        )
 
     @classmethod
     def create_user(cls, username, firstname, lastname, email, password, admin=False):

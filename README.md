@@ -110,6 +110,7 @@ password: password
 - [x] Flash messages(they already exists in view, just need to put them in templates)
 - [x] Use avatar generator like password_hash_generator in model.py
 - [x] Get rid of flask-bootstrap
+- [ ] Learn how to unit test. lol
 - [ ] Figure out how to store avatars on heroku to be able to reactivate avatar generator
 - [ ] Fix competitors' order on "active event", first should be on top last on the bottom
 - [ ] Profile pages

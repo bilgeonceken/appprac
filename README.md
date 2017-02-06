@@ -110,6 +110,7 @@ password: password
 - [x] Flash messages(they already exists in view, just need to put them in templates)
 - [x] Use avatar generator like password_hash_generator in model.py
 - [x] Get rid of flask-bootstrap
+- [ ] Find out why hashed passwords cause problem on PostgreSql and hash the passwords
 - [ ] On active event, show "add" and "remove" buttons according to the users' situation and handle exceptions to avoid certain problems
 - [ ] Learn how to unit test. lol
 - [ ] Figure out how to store avatars on heroku to be able to reactivate avatar generator

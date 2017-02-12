@@ -1,4 +1,5 @@
-from flask import Flask, g, render_template, flash, redirect, url_for, request
+from flask import (Flask, g, render_template, flash, redirect, url_for, request,
+                  )
 from flask_login import (LoginManager, login_user,
                          logout_user, login_required, current_user)
 from flask_bcrypt import check_password_hash
@@ -8,6 +9,7 @@ import forms
 import model
 
 from math import ceil
+import os
 
 app = Flask(__name__)
 moment = Moment(app)
@@ -35,6 +37,7 @@ login_manager.login_view = "login"
 ## from the user ID stored in the session.
 ## It should take the unicode ID of a user,
 ## and return the corresponding user object.
+
 @login_manager.user_loader
 def load_user(user_id):
     """loads users"""
@@ -235,21 +238,21 @@ def index():
     """index view"""
     return render_template("layout.html")
 
-if __name__ == "__main__":
-    model.initialize()
-        ##Creates a superuser for us
-        ##remember we defined this @classmethod ourselves on model.py
-    try:
-        model.User.create_user(
-            username="kambafca",
-            firstname="blg",
-            lastname="onckn",
-            email="kambafca@yopmail.com",
-            #password="password",
-            password="password",
-            admin=True)
-    ## to be able to restart server easily over and over again
-    except:
-        app.run()
-    else:
-        app.run()
+
+##if __name__ == "__main__"
+##commented out the line above because gunicorn is acting weird
+model.initialize()
+try:
+    model.User.create_user(
+        username="kambafca",
+        firstname="blg",
+        lastname="onckn",
+        email="kambafca@yopmail.com",
+        #password="password",
+        password="password",
+        admin=True)
+## to be able to restart server easily over and over again
+except:
+    app.run()
+else:
+    app.run()

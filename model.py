@@ -3,6 +3,7 @@ from peewee import (CharField, IntegerField, DateTimeField, BooleanField,
                     SqliteDatabase, Model, IntegrityError, ForeignKeyField,
                     TextField, DoesNotExist, Proxy, PostgresqlDatabase,
                    )
+from playhouse.fields import ManyToManyField
 from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
 ##from avatarcreator import createavatar
@@ -16,9 +17,9 @@ import os
 # On this repo though, app.json tells heroku to create an env. variable
 # "HEROKU"="1" so no need to do anything.
 
-# For even more control over how your database is defined/initialized,
-# we use the Proxy helper.
-# Proxy objects act as a placeholder,
+# For even more control over how your database is defined/initialized, 
+# we use the Proxy helper. 
+# Proxy objects act as a placeholder, 
 # and then at run-time you can swap it out for a different object.
 db_proxy = Proxy()
 
@@ -61,6 +62,16 @@ class User(UserMixin, Model):
         ##you will not understand the error if you forget that.
         order_by = ('-joined_at',)
 
+#    def get_posts(self):
+#        """gets posts"""
+#        return Post.select().where(Post.user == self)
+
+#    def get_stream(self):
+#        """gets post stream"""
+#        return Post.select().where(
+#            (Post.user == self)
+#        )
+
     @classmethod
     def create_user(cls, username, firstname, lastname, email, password, admin=False):
         """creates a new user"""
@@ -96,10 +107,26 @@ class Post(Model):
         ##newest items first
         order_by = ("-timestamp",)
 
+
+# DateField has properties for:
+#
+#     year
+#     month
+#     day
+#
+# TimeField has properties for:
+#
+#     hour
+#     minute
+#     second
+#
+# DateTimeField has all of them
+
 class Event(Model):
     """ Training event model """
     eventname = CharField()
     eventdatetime = DateTimeField()
+    competitors = ManyToManyField(User, related_name="events")
     eventcontent = CharField()
     ## 0: orienteering, 1: running
     eventtype = IntegerField()
@@ -120,16 +147,6 @@ class Event(Model):
         except IntegrityError:
             raise ValueError("Event already exists")
 
-
-class UserEvent(Model):
-    competitor = ForeignKeyField(User, related_name="competitors")
-    event = ForeignKeyField(Event, related_name="events")
-    timestamp = DateTimeField(default=datetime.datetime.now)
-
-    class Meta:
-        database = db_proxy
-        order_by = ("-timestamp",)
-
 ##we call this function on app.py
 ##to create the tables if not exists
 def initialize():
@@ -143,5 +160,59 @@ def initialize():
     ## We still need a junction table to store the relationships between students and courses.
     ## This model can be accessed by calling the get_through_model() method.
     ## This is useful when creating tables.
-    db_proxy.create_tables([User, Post, Event, UserEvent], safe=True)
+    db_proxy.create_tables([User, Post, Event, Event.competitors.get_through_model()], safe=True)
     db_proxy.close()
+
+
+### MANY TO MANY TUTORIAL
+#
+# from peewee import *
+# from playhouse.fields import ManyToManyField
+#
+# db = SqliteDatabase('school.db')
+#
+# class BaseModel(Model):
+#     class Meta:
+#         database = db
+#
+# class Student(BaseModel):
+#     name = CharField()
+#
+# class Course(BaseModel):
+#     name = CharField()
+#     students = ManyToManyField(Student, related_name='courses')
+#
+# StudentCourse = Course.students.get_through_model()
+#
+# db.create_tables([
+#     Student,
+#     Course,
+#     StudentCourse])
+#
+# # Get all classes that "huey" is enrolled in:
+# huey = Student.get(Student.name == 'Huey')
+# for course in huey.courses.order_by(Course.name):
+#     print course.name
+#
+# # Get all students in "English 101":
+# engl_101 = Course.get(Course.name == 'English 101')
+# for student in engl_101.students:
+#     print student.name
+#
+# # When adding objects to a many-to-many relationship, we can pass
+# # in either a single model instance, a list of models, or even a
+# # query of models:
+# huey.courses.add(Course.select().where(Course.name.contains('English')))
+#
+# engl_101.students.add(Student.get(Student.name == 'Mickey'))
+# engl_101.students.add([
+#     Student.get(Student.name == 'Charlie'),
+#     Student.get(Student.name == 'Zaizee')])
+#
+# # The same rules apply for removing items from a many-to-many:
+# huey.courses.remove(Course.select().where(Course.name.startswith('CS')))
+#
+# engl_101.students.remove(huey)
+#
+# # Calling .clear() will remove all associated objects:
+# cs_150.students.clear()

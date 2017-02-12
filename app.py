@@ -1,15 +1,11 @@
-from flask import (Flask, g, render_template, flash, redirect, url_for, request,
-                  )
+from flask import Flask, g, render_template, flash, redirect, url_for, request
 from flask_login import (LoginManager, login_user,
                          logout_user, login_required, current_user)
 from flask_bcrypt import check_password_hash
 from flask_moment import Moment
-
 import forms
 import model
-
 from math import ceil
-import os
 
 app = Flask(__name__)
 moment = Moment(app)
@@ -21,40 +17,39 @@ moment = Moment(app)
 
 app.secret_key = "asdfasdfasdf324134213423"
 
-## SETTING UP LOGIN MANAGER
+##SETTING UP LOGIN MANAGER
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-## this is a login manager instance method and
-## instead of "login", we could define an absolute url as well
-## If a not logged in user tries to access
+##this is a login manager instance method and
+##instead of "login", we could define an absolute url as well
+##If a not logged in user tries to access
 ## login required view we will redirect them to login view
-## with this.
+##with this.
 login_manager.login_view = "login"
 
-## Documentation: You will need to provide a user_loader callback.
-## This callback is used to reload the user object
+##Documentation: You will need to provide a user_loader callback.
+##This callback is used to reload the user object
 ## from the user ID stored in the session.
-## It should take the unicode ID of a user,
-## and return the corresponding user object.
-
+##It should take the unicode ID of a user,
+##and return the corresponding user object.
 @login_manager.user_loader
 def load_user(user_id):
     """loads users"""
     try:
-        ## .get() is not a dict. method but a peewee Model's instance method.
-        ## getting the row where User.id equals user_id.
-        ## peewee defines autoincerement primary_key id
+        ##.get() is not a dict. method but a peewee Model's instance method.
+        ##getting the row where User.id equals user_id.
+        ##peewee defines autoincerement primary_key id
         ## automatically even if you do not define it
         ## explicitly
         return model.User.get(model.User.id == user_id)
     ## If no row matches the .get() query
-    ## peewee raises this error
+    ##peewee raises this error
     except model.DoesNotExist:
         return None
 
-## For web-apps typically you will open a connection
-## when a request is started and close it when the response is delivered:
+##For web-apps you will typically open a connection
+##when a request is started and close it when the response is delivered:
 @app.before_request
 def before_request():
     """configures before request behavior"""
@@ -64,6 +59,8 @@ def before_request():
     ## BUT!!! current_user is just a proxy. never pass it as it is.
     ## user _get_current_object() instead
     g.user = current_user
+
+##I must think about reasons to use g here.
 
 ##ABOUT the argument: request in after function:
 ##Documentation says that
@@ -127,7 +124,7 @@ def login():
         else:
             ##and secondly passwords
             # if check_password_hash(user.password, form.password.data):
-            if user.password == form.password.data:
+            if user.password==form.password.data:
                 ##login_user() function creates sessions in users' browser, creates a cookie
                 ##logout_user() deletes the session cookie created by login_user()
                 login_user(user)
@@ -152,7 +149,7 @@ def logout():
 def post(page=None):
     """post view"""
     if not page:
-        page = 1
+        page=1
     postsperpage = 6
     allposts = model.Post.select().paginate(page, postsperpage)
     pages = int(ceil(model.Post.select().count()/float(postsperpage)))
@@ -195,54 +192,33 @@ def createevent():
 @login_required
 def nextevent():
     """next event page view function"""
-    user = g.user._get_current_object()
-    event = model.Event.select().get()
-    comps = (model.User
-             .select()
-             .join(model.UserEvent)
-             .join(model.Event)
-             .where(model.UserEvent.event == event)
-             .order_by(model.UserEvent.timestamp)
-            )
     if request.method == "POST":
+        user = g.user._get_current_object()
+        event = model.Event.select().get()
         if request.form["submitbutton"] == "remove":
-            try:
-                ins = (model.UserEvent.select()
-                       .where(model.UserEvent.competitor == user)
-                       .get()
-                      )
-            except model.UserEvent.DoesNotExist:
-                return render_template("nextevent.html", event=event, comps=comps)
-            else:
-                ins.delete_instance()
+            user.events.remove(event)
         elif request.form["submitbutton"] == "add":
-            try:
-                comp = (model.UserEvent
-                        .select()
-                        .where(model.UserEvent.competitor == user, model.UserEvent.event == event)
-                        .get())
-            except model.UserEvent.DoesNotExist:
-                model.UserEvent.create(competitor=user, event=event)
-            else:
-                return render_template("nextevent.html", event=event, comps=comps)
+            user.events.add(event)
     try:
         event = model.Event.select().get()
     except model.DoesNotExist:
         event = None
         flash("No active event", "error")
         return render_template("nextevent.html", event=event)
-    return render_template("nextevent.html", event=event, comps=comps)
+    return render_template("nextevent.html", event=event)
+
 @app.route("/")
 @login_required
 def index():
     """index view"""
     return render_template("layout.html")
 
-
-##if __name__ == "__main__"
-##commented out the line above because gunicorn is acting weird
-model.initialize()
-try:
+if __name__ == "__main__":
+    model.initialize()
+    # try:
+        ##Creates a superuser for us
+        ##remember we defined this @classmethod ourselves on model.py
+    print("deniyom")
     model.User.create_user(
         username="kambafca",
         firstname="blg",
@@ -251,8 +227,19 @@ try:
         #password="password",
         password="password",
         admin=True)
-## to be able to restart server easily over and over again
-except:
-    app.run()
-else:
+    # except:
+    #     print("olmadi")
+
+    # try:
+    #     print("deniyom")
+    #     model.User.create(
+    #             username="kambafca",
+    #             firstname="blg",
+    #             lastname="onckn",
+    #             email="kambafca@yopmail.com",
+    #             password="password",
+    #             admin=True)
+    # except:
+    #     print("olmadi")
+    # app.run(debug=DEBUG, port=PORT, host=HOST)
     app.run()

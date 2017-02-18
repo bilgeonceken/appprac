@@ -1,6 +1,6 @@
 # appprac
 ###An i wanna learn flask project
-Unnecessarily tries to organize a university orienteering team
+A CRUD app. Unnecessarily tries to organize a university orienteering team
 
 ## Deploying to Heroku
 

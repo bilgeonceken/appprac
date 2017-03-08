@@ -10,7 +10,6 @@ from math import ceil
 app = Flask(__name__)
 moment = Moment(app)
 
-##Defined these here to make changes easily
 # DEBUG = True
 # PORT = 8000
 # HOST = "0.0.0.0"
@@ -227,19 +226,4 @@ if __name__ == "__main__":
         #password="password",
         password="password",
         admin=True)
-    # except:
-    #     print("olmadi")
-
-    # try:
-    #     print("deniyom")
-    #     model.User.create(
-    #             username="kambafca",
-    #             firstname="blg",
-    #             lastname="onckn",
-    #             email="kambafca@yopmail.com",
-    #             password="password",
-    #             admin=True)
-    # except:
-    #     print("olmadi")
-    # app.run(debug=DEBUG, port=PORT, host=HOST)
     app.run()

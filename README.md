@@ -18,7 +18,7 @@ Alternatively, you can deploy your own copy of the app using this button:
 You can use PostgreSQL or Sqlite as a database when setting up locally.  
 Both situations are explained below.  
   
-### Database chooice: Postgresql
+### Database choice: Postgresql
 
 + Install PostgreSQL
 + After installation, create a new user to manage the database we'll be creating:
@@ -82,7 +82,7 @@ Basically we delete and create the database again and again to reset it easily.
   
 Better write a migration script for everything else.
 
-### Database chooice: Sqlite
+### Database choice: Sqlite
 ```
 $ git clone https://github.com/kambafca/appprac  
 $ cd appprac/
@@ -97,7 +97,7 @@ Default admin account:
 email   : kambafca@yopmail.com  
 password: password  
 
-##### todo stuff that comes into my mind
+##### todo stuff
 
 - [x] MAIN TODO: FIX THE POSTGRESQL DATABASE INTEGRATION PROBLEM WITH HEROKU  
 

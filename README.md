@@ -1,5 +1,5 @@
 # appprac
-###An i wanna learn flask project
+### An i wanna learn flask project
 Unnecessarily tries to organize a university orienteering team
 
 ## Deploying to Heroku
@@ -14,11 +14,11 @@ Alternatively, you can deploy your own copy of the app using this button:
 
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
-##How to set up locally  
+## How to set up locally  
 You can use PostgreSQL or Sqlite as a database when setting up locally.  
 Both situations are explained below.  
   
-###Database chooice: Postgresql
+### Database chooice: Postgresql
 
 + Install PostgreSQL
 + After installation, create a new user to manage the database we'll be creating:
@@ -67,8 +67,8 @@ Default admin account:
 email   : kambafca@yopmail.com  
 password: password
 
-####Important: 
-when you try something with models and database does not work, you might want to  
+#### Important: 
+When you try something with models and database does not work, you might want to  
 delete everything on the database and restart the app. to do that:
 
 ```
@@ -78,11 +78,11 @@ DROP DATABASE my_postgres_db;
 CREATE DATABASE my_postgres_db OWNER postgres_user;
 ```
 
-basically we delete and create the database again and again to reset it easily.    
+Basically we delete and create the database again and again to reset it easily.    
   
 Better write a migration script for everything else.
 
-###Database chooice: Sqlite
+### Database chooice: Sqlite
 ```
 $ git clone https://github.com/kambafca/appprac  
 $ cd appprac/
@@ -97,7 +97,7 @@ Default admin account:
 email   : kambafca@yopmail.com  
 password: password  
 
-#####todo stuff that comes into my mind
+##### todo stuff that comes into my mind
 
 - [x] MAIN TODO: FIX THE POSTGRESQL DATABASE INTEGRATION PROBLEM WITH HEROKU  
 

@@ -206,6 +206,10 @@ def nextevent():
         return render_template("nextevent.html", event=event)
     return render_template("nextevent.html", event=event)
 
+@app.route("/zap")
+def zap():
+    return render_template("index.html")
+
 @app.route("/")
 @login_required
 def index():

@@ -17,9 +17,9 @@ import os
 # On this repo though, app.json tells heroku to create an env. variable
 # "HEROKU"="1" so no need to do anything.
 
-# For even more control over how your database is defined/initialized, 
-# we use the Proxy helper. 
-# Proxy objects act as a placeholder, 
+# For even more control over how your database is defined/initialized,
+# we use the Proxy helper.
+# Proxy objects act as a placeholder,
 # and then at run-time you can swap it out for a different object.
 db_proxy = Proxy()
 

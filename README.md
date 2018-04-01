@@ -2,6 +2,11 @@
 ### An i wanna learn flask project
 Unnecessarily tries to organize a university orienteering team
 
+## Scenes
+<img src="https://github.com/bilgeonceken/appprac/blob/master/screenshots/login.png" width="142"> <img src="https://github.com/bilgeonceken/appprac/blob/master/screenshots/home.png" width="142"> <img src="https://github.com/bilgeonceken/appprac/blob/master/screenshots/createevent.png" width="142"> <img src="https://github.com/bilgeonceken/appprac/blob/master/screenshots/messagefeed.png" width="142">
+
+<img src="https://github.com/bilgeonceken/appprac/blob/master/screenshots/joinevent.png" width="581">
+
 ## Deploying to Heroku
 
 ```

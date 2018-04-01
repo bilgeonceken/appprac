@@ -26,13 +26,14 @@ db_proxy = Proxy()
 # Different init options for heroku and local.
 # As mentioned above, we need "HEROKU" env variable in heroku
 if "HEROKU" in os.environ:
-    import urllib.parse as ur
+    import urllib.parse as urimport psycopg2
     import psycopg2
     ur.uses_netloc.append("postgres")
     url = ur.urlparse(os.environ["DATABASE_URL"])
     db = PostgresqlDatabase(database=url.path[1:], user=url.username, password=url.password, host=url.hostname, port=url.port)
     db_proxy.initialize(db)
 else:
+    import psycopg2
     db = PostgresqlDatabase('my_postgres_db', user='postgres_user', password='password', host='localhost')
     # db = SqliteDatabase("userdatabase.db")
     db_proxy.initialize(db)

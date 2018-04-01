@@ -33,8 +33,8 @@ if "HEROKU" in os.environ:
     db = PostgresqlDatabase(database=url.path[1:], user=url.username, password=url.password, host=url.hostname, port=url.port)
     db_proxy.initialize(db)
 else:
-    db = PostgresqlDatabase('my_postgres_db', user='postgres_user', password='password', host='localhost')
-    # db = SqliteDatabase("userdatabase.db")
+    # db = PostgresqlDatabase('my_postgres_db', user='postgres_user', password='password', host='localhost')
+    db = SqliteDatabase("userdatabase.db")
     db_proxy.initialize(db)
 
 ## User mixin provides some useful stuff

@@ -218,15 +218,17 @@ def index():
 
 if __name__ == "__main__":
     model.initialize()
-    # try:
-        ##Creates a superuser for us
-        ##remember we defined this @classmethod ourselves on model.py
-#     model.User.create_user(
-#         username="kambafca",
-#         firstname="blg",
-#         lastname="onckn",
-#         email="kambafca@yopmail.com",
-#         #password="password",
-#         password="password",
-#         admin=True)
-    app.run()
+    try:
+        #Creates a superuser for us
+        #remember we defined this @classmethod ourselves on model.py
+      model.User.create_user(
+        username="kambafca",
+        firstname="blg",
+        lastname="onckn",
+        email="kambafca@yopmail.com",
+        #password="password",
+        password="password",
+        admin=True)
+      app.run()
+    except:
+      app.run()

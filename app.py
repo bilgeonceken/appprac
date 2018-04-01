@@ -221,13 +221,12 @@ if __name__ == "__main__":
     # try:
         ##Creates a superuser for us
         ##remember we defined this @classmethod ourselves on model.py
-    print("deniyom")
-    model.User.create_user(
-        username="kambafca",
-        firstname="blg",
-        lastname="onckn",
-        email="kambafca@yopmail.com",
-        #password="password",
-        password="password",
-        admin=True)
+#     model.User.create_user(
+#         username="kambafca",
+#         firstname="blg",
+#         lastname="onckn",
+#         email="kambafca@yopmail.com",
+#         #password="password",
+#         password="password",
+#         admin=True)
     app.run()

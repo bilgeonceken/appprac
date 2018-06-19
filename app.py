@@ -210,6 +210,10 @@ def nextevent():
 def zap():
     return render_template("index.html")
 
+@app.route("/w")
+def w():
+    return render_template("w.html")
+
 @app.route("/")
 @login_required
 def index():

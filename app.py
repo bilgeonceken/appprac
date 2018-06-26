@@ -149,7 +149,7 @@ def get_tweets(username):
 
 
 #
-@app.route("/twitter_login/username")
+@app.route("/twitter_login/<username>")
 def twitter_login(username):
     user = model.User.get(model.User.username == username)
 

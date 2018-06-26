@@ -1,8 +1,18 @@
 import datetime
-from peewee import (CharField, IntegerField, DateTimeField, BooleanField,
-                    SqliteDatabase, Model, IntegrityError, ForeignKeyField,
-                    TextField, DoesNotExist, Proxy, PostgresqlDatabase,
-                   )
+from peewee import (
+    CharField,
+    IntegerField,
+    DateTimeField,
+    BooleanField,
+    SqliteDatabase,
+    Model,
+    IntegrityError,
+    ForeignKeyField,
+    TextField,
+    DoesNotExist,
+    Proxy,
+    PostgresqlDatabase,
+)
 from playhouse.fields import ManyToManyField
 from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
@@ -30,12 +40,18 @@ db_proxy = Proxy()
 if "HEROKU" in os.environ:
     ur.uses_netloc.append("postgres")
     url = ur.urlparse(os.environ["DATABASE_URL"])
-    db = PostgresqlDatabase(database=url.path[1:], user=url.username, password=url.password, host=url.hostname, port=url.port)
+    db = PostgresqlDatabase(
+        database=url.path[1:],
+        user=url.username,
+        password=url.password,
+        host=url.hostname,
+        port=url.port)
     db_proxy.initialize(db)
 else:
-    db = PostgresqlDatabase('my_postgres_db', user='postgres_user', password='postgres_user', host='localhost')
-    # db = SqliteDatabase("userdatabase.db")
+    # db = PostgresqlDatabase('my_postgres_db', user='postgres_user', password='postgres_user', host='localhost')
+    db = SqliteDatabase("userdatabase.db")
     db_proxy.initialize(db)
+
 
 ## User mixin provides some useful stuff
 class User(UserMixin, Model):
@@ -50,6 +66,10 @@ class User(UserMixin, Model):
     joined_at = DateTimeField(default=datetime.datetime.now)
     firstname = CharField()
     lastname = CharField()
+    request_token_oauth_token = CharField(default="")
+    request_token_oauth_token_secret = CharField(default="")
+    twitter_access_token = CharField(default="")
+    twitter_access_secret = CharField(default="")
     ####ex: birthday=date(1960, 1, 15)
     ##birthday = DateField()
     avatarloc = CharField(default="/static/avatars/default.png")
@@ -60,7 +80,8 @@ class User(UserMixin, Model):
         database = db_proxy
         ##its a tuple. so put  , at the end.
         ##you will not understand the error if you forget that.
-        order_by = ('-joined_at',)
+        order_by = ('-joined_at', )
+
 
 #    def get_posts(self):
 #        """gets posts"""
@@ -73,21 +94,31 @@ class User(UserMixin, Model):
 #        )
 
     @classmethod
-    def create_user(cls, username, firstname, lastname, email, password, admin=False):
+    def create_user(cls,
+                    username,
+                    firstname,
+                    lastname,
+                    email,
+                    password,
+                    admin=False):
         """creates a new user"""
         try:
-            cls.create(username=username, firstname=firstname,
-                       lastname=lastname, email=email,
-                       #password=generate_password_hash(password),
-                       password=password,
-                       is_admin=admin
-                       ## createavatar funtion takes username as argument
-                       ## and generates and avatar accordingly. Returns location
-                       ## of the avatar to be added to the database
-                       ##,avatarloc=createavatar(username)
-                      )
+            cls.create(
+                username=username,
+                firstname=firstname,
+                lastname=lastname,
+                email=email,
+                #password=generate_password_hash(password),
+                password=password,
+                is_admin=admin
+                ## createavatar funtion takes username as argument
+                ## and generates and avatar accordingly. Returns location
+                ## of the avatar to be added to the database
+                ##,avatarloc=createavatar(username)
+            )
         except IntegrityError:
             raise ValueError("User already exists")
+
 
     ##Typically a for. key will contain primary key of the model
     ##it relates to. but you can specify a "to_field."
@@ -99,13 +130,14 @@ class Post(Model):
     user = ForeignKeyField(
         rel_model=User,
         related_name="posts",
-        )
+    )
     content = TextField()
+
     class Meta:
         """defines database the model related to and stuff"""
         database = db_proxy
         ##newest items first
-        order_by = ("-timestamp",)
+        order_by = ("-timestamp", )
 
 
 # DateField has properties for:
@@ -122,6 +154,7 @@ class Post(Model):
 #
 # DateTimeField has all of them
 
+
 class Event(Model):
     """ Training event model """
     eventname = CharField()
@@ -132,20 +165,25 @@ class Event(Model):
     eventtype = IntegerField()
     ##0:monday, 1:tuesday 2: wednesday, ,4: thursday 5: saturday, 6: sunday
     eventday = CharField()
+
     class Meta:
         database = db_proxy
-        order_by = ("-eventdatetime",)
+        order_by = ("-eventdatetime", )
 
     @classmethod
-    def create_event(cls, eventname, eventdatetime, eventtype, eventday, eventcontent):
+    def create_event(cls, eventname, eventdatetime, eventtype, eventday,
+                     eventcontent):
         """creates a new event"""
         try:
-            cls.create(eventname=eventname, eventdatetime=eventdatetime,
-                       eventtype=eventtype, eventday=eventday,
-                       eventcontent=eventcontent
-                      )
+            cls.create(
+                eventname=eventname,
+                eventdatetime=eventdatetime,
+                eventtype=eventtype,
+                eventday=eventday,
+                eventcontent=eventcontent)
         except IntegrityError:
             raise ValueError("Event already exists")
+
 
 ##we call this function on app.py
 ##to create the tables if not exists
@@ -160,7 +198,9 @@ def initialize():
     ## We still need a junction table to store the relationships between students and courses.
     ## This model can be accessed by calling the get_through_model() method.
     ## This is useful when creating tables.
-    db_proxy.create_tables([User, Post, Event, Event.competitors.get_through_model()], safe=True)
+    db_proxy.create_tables(
+        [User, Post, Event,
+         Event.competitors.get_through_model()], safe=True)
     db_proxy.close()
 
 

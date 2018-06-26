@@ -1,18 +1,39 @@
 from flask import Flask, g, render_template, flash, redirect, url_for, request
-from flask_login import (LoginManager, login_user,
-                         logout_user, login_required, current_user)
+from flask_login import (LoginManager, login_user, logout_user, login_required,
+                         current_user)
 from flask_bcrypt import check_password_hash
 from flask_moment import Moment
 import forms
 import model
 from math import ceil
 
+import cgi
+from flask import jsonify
+import urllib.parse
+import oauth2 as oauth
+import requests
+import twitter
+from flask_cors import CORS, cross_origin
+
+consumer_key = '7fF6YfZsZ3XzW2y4VttgFaoNj'
+consumer_secret = '5cVR8eoZmwf3oRr157hA7qeyXmPvdX9QEeo2y2VZuEaFf5cPzF'
+
+request_token_url = 'https://api.twitter.com/oauth/request_token'
+access_token_url = 'https://api.twitter.com/oauth/access_token'
+authorize_url = 'https://api.twitter.com/oauth/authorize'
+
+consumer = oauth.Consumer(consumer_key, consumer_secret)
+
+request_token_oauth = ""
+request_token_secret = ""
+
 app = Flask(__name__)
+CORS(app)
 moment = Moment(app)
 
-# DEBUG = True
-# PORT = 8000
-# HOST = "0.0.0.0"
+DEBUG = True
+PORT = 8000
+HOST = "0.0.0.0"
 
 app.secret_key = "asdfasdfasdf324134213423"
 
@@ -26,6 +47,7 @@ login_manager.init_app(app)
 ## login required view we will redirect them to login view
 ##with this.
 login_manager.login_view = "login"
+
 
 ##Documentation: You will need to provide a user_loader callback.
 ##This callback is used to reload the user object
@@ -47,6 +69,7 @@ def load_user(user_id):
     except model.DoesNotExist:
         return None
 
+
 ##For web-apps you will typically open a connection
 ##when a request is started and close it when the response is delivered:
 @app.before_request
@@ -59,6 +82,7 @@ def before_request():
     ## user _get_current_object() instead
     g.user = current_user
 
+
 ##I must think about reasons to use g here.
 
 ##ABOUT the argument: request in after function:
@@ -70,6 +94,7 @@ def before_request():
 ##So maybe even if i dont give request argument to after_request function myself
 ##it takes it by default
 
+
 ##It does not take an argument, response in documentation
 ## however returning the defined response automatically
 ## makes sense
@@ -78,6 +103,88 @@ def after_request(response):
     """configures after request behavior"""
     g.db.close()
     return response
+
+
+#
+@app.route("/get_tweets/<username>/")
+@cross_origin()
+def get_tweets(username):
+    user = model.User.get(model.User.username == username)
+
+    api = twitter.Api(
+        consumer_key=consumer_key,
+        consumer_secret=consumer_secret,
+        access_token_key=user.twitter_access_token,
+        access_token_secret=user.twitter_access_secret)
+
+    # return jsonify([{"a": "1", "b": "2"}])
+    tws = api.GetSearch(raw_query="q=jotform&count=200")
+    tweets = []
+    child = {}
+
+    # child = api.GetSearch(geocode="37.781157,-122.398720,1mi")[0]
+    for i in tws:
+        tweets.append({
+            'created_at': i.created_at,
+            'id': i.id,
+            'text': i.text,
+            'user_username': i.user.name,
+            'user_screen_name': i.user.screen_name,
+            'user_profile_image_url': i.user.profile_image_url
+        })
+    print(jsonify(tweets))
+    return jsonify(tweets)
+    # return jsonify([d{
+    #     'ID': i.ID,
+    #     'Created': i.Created,
+    #     'Text': i.Text
+    # } for i in api.GetSearch(geocode="37.781157,-122.398720,1mi")])
+    #
+    #
+
+
+#
+@app.route("/twitter_login/username")
+def twitter_login(username):
+    user = model.User.get(model.User.username == username)
+
+    client = oauth.Client(consumer)
+    resp, content = client.request(request_token_url, "GET")
+    if resp['status'] != '200':
+        raise Exception("Invalid response {}".format(resp['status']))
+
+    request_token = dict(urllib.parse.parse_qsl(content.decode("utf-8")))
+    user.request_token_oauth_token = request_token['oauth_token']
+    user.request_token_oauth_token_secret = request_token['oauth_token_secret']
+    user.save()
+    authenticate_user_url = "{0}?oauth_token={1}".format(
+        authorize_url, request_token['oauth_token'])
+
+    return redirect(authenticate_user_url)
+
+
+@app.route("/login_callback")
+def login_callback():
+    oauth_token = request.args.get('oauth_token')
+    oauth_verifier = request.args.get('oauth_verifier')
+
+    user = model.User.get(model.User.request_token_oauth_token == oauth_token)
+    token = oauth.Token(user.request_token_oauth_token,
+                        user.request_token_oauth_token_secret)
+
+    token.set_verifier(oauth_verifier)
+    client = oauth.Client(consumer, token)
+
+    #
+    resp, content = client.request(access_token_url, "POST")
+    access_token = dict(urllib.parse.parse_qsl(content.decode("utf-8")))
+    user.twitter_access_token = access_token['oauth_token']
+    user.twitter_access_secret = access_token['oauth_token_secret']
+    user.save()
+
+    print(access_token)
+    return redirect("http://127.0.0.1:3000/joweets/{}".format(user.email))
+
 
 @app.route("/register", methods=("GET", "POST"))
 def register():
@@ -108,6 +215,7 @@ def register():
     ##if get request
     return render_template("register.html", form=form)
 
+
 @app.route("/login", methods=("GET", "POST"))
 def login():
     """login view function"""
@@ -123,7 +231,7 @@ def login():
         else:
             ##and secondly passwords
             # if check_password_hash(user.password, form.password.data):
-            if user.password==form.password.data:
+            if user.password == form.password.data:
                 ##login_user() function creates sessions in users' browser, creates a cookie
                 ##logout_user() deletes the session cookie created by login_user()
                 login_user(user)
@@ -134,6 +242,7 @@ def login():
 
     return render_template("login.html", form=form)
 
+
 @app.route("/logout")
 @login_required
 def logout():
@@ -142,26 +251,30 @@ def logout():
     flash("Logged out!", "success")
     return redirect(url_for("index"))
 
+
 @app.route("/post", methods=("GET", "POST"))
 @app.route("/post/<int:page>", methods=("GET", "POST"))
 @login_required
 def post(page=None):
     """post view"""
     if not page:
-        page=1
+        page = 1
     postsperpage = 6
     allposts = model.Post.select().paginate(page, postsperpage)
-    pages = int(ceil(model.Post.select().count()/float(postsperpage)))
+    pages = int(ceil(model.Post.select().count() / float(postsperpage)))
     form = forms.PostForm()
     if form.validate_on_submit():
         ##g.user=current_user and curret_user is just a proxy
         ## you must user _get_current_object() when passing it to
         ## places.
-        model.Post.create(user=g.user._get_current_object(),
-                          content=form.content.data.strip())
+        model.Post.create(
+            user=g.user._get_current_object(),
+            content=form.content.data.strip())
         flash("Post posted!")
         return redirect(url_for("post"))
-    return render_template("post.html", form=form, allposts=allposts, page=page, pages=pages)
+    return render_template(
+        "post.html", form=form, allposts=allposts, page=page, pages=pages)
+
 
 @app.route("/members")
 @login_required
@@ -170,22 +283,24 @@ def members():
     teammembers = model.User.select()
     return render_template("members.html", teammembers=teammembers)
 
+
 @app.route("/createevent", methods=("GET", "POST"))
 @login_required
 def createevent():
     """create event page view function"""
     form = forms.EventForm()
     if form.validate_on_submit():
-        model.Event.create_event(eventname=form.eventname.data,
-                                 eventdatetime=form.eventdatetime.data,
-                                 eventtype=int(form.eventtype.data),
-                                 eventday=int(form.eventday.data),
-                                 eventcontent=form.eventcontent.data
-                                )
+        model.Event.create_event(
+            eventname=form.eventname.data,
+            eventdatetime=form.eventdatetime.data,
+            eventtype=int(form.eventtype.data),
+            eventday=int(form.eventday.data),
+            eventcontent=form.eventcontent.data)
 
         flash("Event created successfully")
         return redirect(url_for("nextevent"))
     return render_template("createevent.html", form=form)
+
 
 @app.route("/nextevent", methods=("GET", "POST"))
 @login_required
@@ -206,13 +321,16 @@ def nextevent():
         return render_template("nextevent.html", event=event)
     return render_template("nextevent.html", event=event)
 
+
 @app.route("/zap")
 def zap():
     return render_template("index.html")
 
+
 @app.route("/w")
 def w():
     return render_template("w.html")
+
 
 @app.route("/")
 @login_required
@@ -220,9 +338,11 @@ def index():
     """index view"""
     return render_template("layout.html")
 
+
 @app.before_first_request
 def initzo():
     model.initialize()
+
 
 if __name__ == "__main__":
     model.initialize()
@@ -237,6 +357,6 @@ if __name__ == "__main__":
             #password="password",
             password="password",
             admin=True)
-        app.run()
+        app.run(port=PORT, host=HOST)
     except:
-        app.run()
+        app.run(port=PORT, debug=DEBUG)

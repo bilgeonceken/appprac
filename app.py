@@ -15,8 +15,14 @@ import requests
 import twitter
 from flask_cors import CORS, cross_origin
 
-consumer_key = '7fF6YfZsZ3XzW2y4VttgFaoNj'
-consumer_secret = '5cVR8eoZmwf3oRr157hA7qeyXmPvdX9QEeo2y2VZuEaFf5cPzF'
+if "CONSUMER_KEY" in os.environ:
+    consumer_key = os.environ.get('CONSUMER_KEY', None)
+else:
+    consumer_key = oauth_config.consumer_key
+if "CONSUMER_SECRET" in os.environ:
+    consumer_secret = os.environ.get('CONSUMER_SECRET', None)
+else:
+    consumer_secret = oauth_config.consumer_secret
 
 request_token_url = 'https://api.twitter.com/oauth/request_token'
 access_token_url = 'https://api.twitter.com/oauth/access_token'

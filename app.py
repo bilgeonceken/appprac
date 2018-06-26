@@ -6,6 +6,8 @@ from flask_moment import Moment
 import forms
 import model
 from math import ceil
+import os
+import oauth_config
 
 import cgi
 from flask import jsonify

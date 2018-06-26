@@ -122,12 +122,10 @@ def get_tweets(username):
         access_token_key=user.twitter_access_token,
         access_token_secret=user.twitter_access_secret)
 
-    # return jsonify([{"a": "1", "b": "2"}])
     tws = api.GetSearch(raw_query="q=jotform&count=200")
     tweets = []
     child = {}
 
-    # child = api.GetSearch(geocode="37.781157,-122.398720,1mi")[0]
     for i in tws:
         tweets.append({
             'created_at': i.created_at,
@@ -139,13 +137,6 @@ def get_tweets(username):
         })
     print(jsonify(tweets))
     return jsonify(tweets)
-    # return jsonify([d{
-    #     'ID': i.ID,
-    #     'Created': i.Created,
-    #     'Text': i.Text
-    # } for i in api.GetSearch(geocode="37.781157,-122.398720,1mi")])
-    #
-    #
 
 
 #

@@ -188,7 +188,7 @@ def login_callback():
     user.save()
 
     print(access_token)
-    return redirect("http://127.0.0.1:3000/joweets/{}".format(user.email))
+    return redirect("http://127.0.0.1:3000/joweets/{}".format(user.username))
 
 
 @app.route("/register", methods=("GET", "POST"))

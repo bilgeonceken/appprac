@@ -7,7 +7,6 @@ import forms
 import model
 from math import ceil
 import os
-import oauth_config
 
 import cgi
 from flask import jsonify
@@ -20,6 +19,7 @@ from flask_cors import CORS, cross_origin
 if "CONSUMER_KEY" in os.environ:
     consumer_key = os.environ.get('CONSUMER_KEY', None)
 else:
+    import oauth_config
     consumer_key = oauth_config.consumer_key
 if "CONSUMER_SECRET" in os.environ:
     consumer_secret = os.environ.get('CONSUMER_SECRET', None)
@@ -31,9 +31,6 @@ access_token_url = 'https://api.twitter.com/oauth/access_token'
 authorize_url = 'https://api.twitter.com/oauth/authorize'
 
 consumer = oauth.Consumer(consumer_key, consumer_secret)
-
-request_token_oauth = ""
-request_token_secret = ""
 
 app = Flask(__name__)
 CORS(app)

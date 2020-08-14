@@ -279,6 +279,13 @@ def members():
     teammembers = model.User.select()
     return render_template("members.html", teammembers=teammembers)
 
+@app.route("/whtest", methods=[POST])
+def whtest():
+    print('request\n)
+    print(request)
+    print('request json\n)
+    print(request.json)
+    return jsonify({mes: 'OK'})
 
 @app.route("/createevent", methods=("GET", "POST"))
 @login_required
